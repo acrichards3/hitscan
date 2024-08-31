@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "dev": "tsx watch src/index.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "tsx": "^4.7.1"
+  },
+  "dependencies": {
+    "@fps/lib": "workspace:*",
+    "@geckos.io/server": "^3.0.0"
+  }
+}
