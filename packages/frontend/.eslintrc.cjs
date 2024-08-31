@@ -21,9 +21,10 @@ module.exports = {
     plugins: ["react-refresh", "sort-keys", "typescript-sort-keys"],
     rules: {
         "no-unused-vars": "warn",
+        "@typescript-eslint/no-unused-vars": ["warn"],
         "react/jsx-boolean-value": [2, "always"],
         "react/jsx-sort-props": [
-            2,
+            1,
             {
                 callbacksLast: true,
             },
@@ -33,7 +34,7 @@ module.exports = {
         "react/no-unknown-property": 0,
         "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
         "sort-keys": 0, // disable default eslint sort-keys
-        "sort-keys/sort-keys-fix": 2,
+        "sort-keys/sort-keys-fix": 1,
         "typescript-sort-keys/interface": "warn",
         "typescript-sort-keys/string-enum": "warn",
     },

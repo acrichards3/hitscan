@@ -1,7 +1,7 @@
-import { Stats, Environment } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
 import React from "react";
 import backgroundImage from "./images/rustig_koppie_puresky_1k.hdr";
+import { Stats, Environment } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
 import { Game } from "./Game";
 
 export const World: React.FC = () => {

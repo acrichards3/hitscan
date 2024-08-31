@@ -6,17 +6,17 @@ import type { WeaponStats } from "../weapon";
 
 export const RayGun: React.FC = () => {
     const rayGunStats: WeaponStats = {
-        adsTime: 0,
+        adsTimeMs: 0,
         bulletSpread: 0,
         bulletsPerMagazine: 10,
         bulletsPerShot: 1,
         damageType: "Ballistic",
-        fireRate: 100,
+        fireRateMs: 100,
         firingMode: "Single",
         horizontalRecoil: 0,
         maxDamagePerBullet: 10,
         name: "Ray Gun",
-        reloadTime: 1000,
+        reloadTimeMs: 1000,
         reserveAmmo: 100,
         verticalRecoil: 0,
         weaponClass: "Pistol",
