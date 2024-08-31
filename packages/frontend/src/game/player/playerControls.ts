@@ -12,6 +12,9 @@ interface PlayerControls {
 }
 
 type Jump = Pick<PlayerControls, "gamepad" | "playerOnFloor" | "playerVelocity">;
+
+// TODO: Make these functions pure
+
 export const jump = (props: Jump) => {
     if (props.gamepad == null) return;
 
