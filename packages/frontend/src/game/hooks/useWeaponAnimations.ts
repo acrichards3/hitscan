@@ -1,7 +1,8 @@
 import React from "react";
 import { sprint, walk, idle } from "../weapons/functions/weaponAnimations";
-import { Vector3, Quaternion, Group, Clock } from "three";
-import { Camera } from "@react-three/fiber";
+import { Quaternion, Vector3, type Group, type Clock } from "three";
+import type { Camera } from "@react-three/fiber";
+import type { PlayerState } from "@fps/lib";
 
 interface WeaponAnimationProps {
     adsOffset: Vector3;
