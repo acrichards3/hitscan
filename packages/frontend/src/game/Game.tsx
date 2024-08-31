@@ -13,7 +13,7 @@ export const Game: React.FC = () => {
     const gltf = useGLTF(testMap);
     const { nodes, scene } = gltf;
 
-    const octree = useOctree(scene);
+    const octree = useOctree(scene); // Handles collision detection
     const mapMesh = nodes["Suzanne007"];
 
     if (!isMesh(mapMesh)) return null;
