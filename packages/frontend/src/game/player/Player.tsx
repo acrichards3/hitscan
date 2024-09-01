@@ -5,10 +5,22 @@ import { useFrame } from "@react-three/fiber";
 import { useControls } from "./controls/useControls";
 import { teleportPlayerIfOob, updatePlayer } from "./playerFunctions";
 import { channel } from "../utils/geckos";
+import type { Camera } from "three";
 import type { Octree } from "three/examples/jsm/Addons.js";
 import type { PlayerState } from "@fps/lib";
 
 const STEPS_PER_FRAME = 10;
+
+export interface PlayerControls {
+    camera: Camera;
+    delta: number;
+    euler: Euler;
+    gamepad: Gamepad | null | undefined;
+    playerDirection: Vector3;
+    playerOnFloor: boolean;
+    playerStateRef: React.MutableRefObject<PlayerState>;
+    playerVelocity: Vector3;
+}
 
 interface PlayerProps {
     children?: React.ReactNode;

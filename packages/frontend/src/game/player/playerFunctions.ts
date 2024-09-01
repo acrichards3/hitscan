@@ -1,6 +1,6 @@
-import { Camera, Vector3 } from "three";
-import { Capsule } from "three/examples/jsm/math/Capsule.js";
-import { Octree } from "three/examples/jsm/Addons.js";
+import type { Camera, Vector3 } from "three";
+import type { Capsule } from "three/examples/jsm/math/Capsule.js";
+import type { Octree } from "three/examples/jsm/Addons.js";
 
 const GRAVITY = 50;
 
