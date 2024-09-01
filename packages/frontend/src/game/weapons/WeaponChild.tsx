@@ -1,4 +1,4 @@
-import { useWeaponAnimations } from "../hooks/useWeaponAnimations";
+import { useWeaponAnimations } from "./animations/useWeaponAnimations";
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { Mesh } from "three";

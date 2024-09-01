@@ -43,7 +43,13 @@ export const useMove = () => {
         props.camera.quaternion.setFromEuler(props.euler);
 
         // Update player position
-        const moveSpeedDelta = props.delta * (props.playerOnFloor ? 25 : 8);
+        let moveSpeedDelta = props.delta * (props.playerOnFloor ? 25 : 8);
+
+        // Cut movement speed in half when aiming
+        if (props.playerStateRef.current.isAiming) {
+            moveSpeedDelta /= 2;
+        }
+
         props.playerVelocity.add(
             getSideVector(props.camera, props.playerDirection).multiplyScalar(
                 moveSpeedDelta * leftX,
