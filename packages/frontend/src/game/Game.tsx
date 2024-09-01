@@ -4,17 +4,29 @@ import { Player } from "./player/Player";
 import { useOctree } from "./hooks/useOctree";
 import { useGLTF } from "@react-three/drei";
 import { AR } from "./weapons/AR/AR";
-import { Mesh, Object3D, Quaternion, Vector3 } from "three";
+import { Mesh, Quaternion, Vector3 } from "three";
 import { Eve } from "./Eve";
 import { channel } from "./utils/geckos";
-import { GameState } from "@fps/lib";
+import type { GameState, PlayerState } from "@fps/lib";
+import type { Object3D } from "three";
 
 export const Game: React.FC = () => {
     const gltf = useGLTF(testMap);
     const { nodes, scene } = gltf;
-
     const octree = useOctree(scene); // Handles collision detection
     const mapMesh = nodes["Suzanne007"];
+
+    // Ref prevents re-renders particularly in places where useFrame is used
+    const playerStateRef = React.useRef<PlayerState>({
+        direction: { w: 0, x: 0, y: 0, z: 0 },
+        isAiming: false,
+        isCrouching: false,
+        isJumping: false,
+        isShooting: false,
+        isSprinting: false,
+        isWalking: false,
+        position: { x: 0, y: 0, z: 0 },
+    });
 
     if (!isMesh(mapMesh)) return null;
     return (
@@ -30,7 +42,7 @@ export const Game: React.FC = () => {
             </group>
             <Players />
             <Player octree={octree}>
-                <AR />
+                <AR playerStateRef={playerStateRef} />
             </Player>
         </>
     );

@@ -1,11 +1,12 @@
 import React from "react";
 import { Capsule } from "three/examples/jsm/math/Capsule.js";
-import { Camera, Euler, Vector3 } from "three";
+import { Euler, Vector3 } from "three";
 import { useFrame } from "@react-three/fiber";
-import { Octree } from "three/examples/jsm/Addons.js";
 import { jump, move } from "./playerControls";
 import { teleportPlayerIfOob, updatePlayer } from "./playerFunctions";
 import { channel } from "../utils/geckos";
+import type { Camera } from "@react-three/fiber";
+import type { Octree } from "three/examples/jsm/Addons.js";
 
 const STEPS_PER_FRAME = 10;
 

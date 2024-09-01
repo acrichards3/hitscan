@@ -1,8 +1,8 @@
-import React from "react";
 import backgroundImage from "./images/rustig_koppie_puresky_1k.hdr";
 import { Stats, Environment } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Game } from "./Game";
+import type React from "react";
 
 export const World: React.FC = () => {
     return (
@@ -25,6 +25,7 @@ export const World: React.FC = () => {
                 <Game />
                 <Stats />
             </Canvas>
+            {/* Red dot in center of screen */}
             {/* <div
                 style={{
                     backgroundColor: "red",

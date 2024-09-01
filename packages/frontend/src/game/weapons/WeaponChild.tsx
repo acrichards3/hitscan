@@ -1,9 +1,11 @@
-import React from "react";
 import { useWeaponAnimations } from "../hooks/useWeaponAnimations";
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { Mesh, Object3D, Vector3 } from "three";
+import { Mesh } from "three";
+import type React from "react";
+import type { Object3D, Vector3 } from "three";
 import type { WeaponStats } from "./weapon";
+import type { PlayerState } from "@fps/lib";
 
 interface WeaponChildProps {
     adsOffset: Vector3;
@@ -11,6 +13,7 @@ interface WeaponChildProps {
     idleOffset: Vector3;
     idleRotation: Vector3;
     meshPath: string;
+    playerStateRef: React.MutableRefObject<PlayerState>;
     scale: number;
     stats: WeaponStats;
 }

@@ -1,10 +1,15 @@
-import React from "react";
 import ARMesh from "./AR.glb";
 import { Vector3 } from "three";
 import { WeaponChild } from "../WeaponChild";
+import type React from "react";
 import type { WeaponStats } from "../weapon";
+import type { PlayerState } from "@fps/lib";
 
-export const AR: React.FC = () => {
+interface ARProps {
+    playerStateRef: React.MutableRefObject<PlayerState>;
+}
+
+export const AR: React.FC<ARProps> = ({ playerStateRef }) => {
     const ARStats: WeaponStats = {
         adsTimeMs: 0,
         bulletSpread: 0,
@@ -30,6 +35,7 @@ export const AR: React.FC = () => {
             idleOffset={new Vector3(0.13, -0.18, -0.36)}
             idleRotation={new Vector3(0, 0, 0)}
             meshPath={ARMesh}
+            playerStateRef={playerStateRef}
             scale={0.15}
             stats={ARStats}
         />
