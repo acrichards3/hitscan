@@ -1,35 +1,23 @@
-import { Euler, Vector3, Camera } from "three";
 import { getSideVector, getForwardVector } from "./playerFunctions";
+import type { Euler, Vector3, Camera } from "three";
+import type { PlayerState } from "@fps/lib";
 
-interface PlayerControls {
+export interface PlayerControls {
     camera: Camera;
     delta: number;
     euler: Euler;
     gamepad: Gamepad | null | undefined;
     playerDirection: Vector3;
     playerOnFloor: boolean;
+    playerStateRef: React.MutableRefObject<PlayerState>;
     playerVelocity: Vector3;
 }
-
-type Jump = Pick<PlayerControls, "gamepad" | "playerOnFloor" | "playerVelocity">;
-
-// TODO: Make these functions pure
-
-export const jump = (props: Jump) => {
-    if (props.gamepad == null) return;
-
-    const isJumpPressed = !!props.gamepad.buttons[0]?.pressed;
-
-    if (props.playerOnFloor && isJumpPressed) {
-        props.playerVelocity.y += 15;
-    }
-};
 
 export const move = (props: PlayerControls) => {
     if (props.gamepad == null) return;
 
     const [leftX, leftY, rightX, rightY] = props.gamepad.axes.map((angle) =>
-        // TODO(jaker): Better deadzone handling
+        // TODO: Better deadzone handling
         Math.abs(angle) < 0.1 ? 0 : angle,
     );
     if (leftX == null || leftY == null || rightX == null || rightY == null) {
