@@ -1,6 +1,7 @@
 import EveMesh from "./eve.glb";
 import { useGLTF } from "@react-three/drei";
 import { Euler, Vector3 } from "three";
+import type * as THREE from "three";
 import type { Quaternion } from "three";
 import type React from "react";
 
@@ -29,10 +30,10 @@ export const Eve: React.FC<EveProps> = (props) => {
                     <skinnedMesh
                         castShadow={true}
                         frustumCulled={false}
-                        geometry={nodes.Mesh.geometry}
+                        geometry={(nodes.Mesh as THREE.Mesh).geometry}
                         material={materials.SpacePirate_M}
                         name="Mesh"
-                        skeleton={nodes.Mesh.skeleton}
+                        skeleton={(nodes.Mesh as THREE.SkinnedMesh).skeleton}
                     />
                 </group>
             </group>

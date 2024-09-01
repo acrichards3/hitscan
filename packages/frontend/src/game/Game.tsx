@@ -29,6 +29,7 @@ export const Game: React.FC = () => {
     });
 
     if (!isMesh(mapMesh)) return null;
+
     return (
         <>
             <group dispose={null}>
@@ -41,12 +42,13 @@ export const Game: React.FC = () => {
                 />
             </group>
             <Players />
-            <Player octree={octree}>
+            <Player octree={octree} playerStateRef={playerStateRef}>
                 <AR playerStateRef={playerStateRef} />
             </Player>
         </>
     );
 };
+
 const Players = () => {
     const [gameState, setGameState] = React.useState<GameState>();
     React.useEffect(() => {

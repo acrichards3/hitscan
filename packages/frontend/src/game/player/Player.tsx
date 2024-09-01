@@ -2,17 +2,18 @@ import React from "react";
 import { Capsule } from "three/examples/jsm/math/Capsule.js";
 import { Euler, Vector3 } from "three";
 import { useFrame } from "@react-three/fiber";
-import { jump, move } from "./playerControls";
+import { useControls } from "./controls/useControls";
 import { teleportPlayerIfOob, updatePlayer } from "./playerFunctions";
 import { channel } from "../utils/geckos";
-import type { Camera } from "@react-three/fiber";
 import type { Octree } from "three/examples/jsm/Addons.js";
+import type { PlayerState } from "@fps/lib";
 
 const STEPS_PER_FRAME = 10;
 
 interface PlayerProps {
     children?: React.ReactNode;
     octree: Octree;
+    playerStateRef: React.MutableRefObject<PlayerState>;
 }
 
 export const Player: React.FC<PlayerProps> = (props) => {
@@ -24,6 +25,14 @@ export const Player: React.FC<PlayerProps> = (props) => {
         () => new Capsule(new Vector3(0, 10, 0), new Vector3(0, 11, 0), 0.5),
         [],
     );
+
+    const { handleControls } = useControls({
+        euler,
+        playerDirection,
+        playerOnFloor,
+        playerStateRef: props.playerStateRef,
+        playerVelocity,
+    });
 
     useFrame(({ camera }, delta) => {
         const [gamepad] = navigator.getGamepads();
@@ -41,8 +50,10 @@ export const Player: React.FC<PlayerProps> = (props) => {
             );
         }
 
-        // Player postion and controls
-        controls(camera, delta, euler, gamepad, playerDirection, playerOnFloor, playerVelocity);
+        // Handle player controls
+        handleControls({ camera, delta, gamepad });
+
+        // Teleport player if out of bounds
         teleportPlayerIfOob(camera, capsule, playerVelocity);
 
         // Send player position to server
@@ -59,24 +70,3 @@ export const Player: React.FC<PlayerProps> = (props) => {
 
     return props.children;
 };
-
-function controls(
-    camera: Camera,
-    delta: number,
-    euler: Euler,
-    gamepad: Gamepad | null | undefined,
-    playerDirection: Vector3,
-    playerOnFloor: React.MutableRefObject<boolean>,
-    playerVelocity: Vector3,
-) {
-    jump({ gamepad, playerOnFloor: playerOnFloor.current, playerVelocity });
-    move({
-        camera,
-        delta,
-        euler,
-        gamepad,
-        playerDirection,
-        playerOnFloor: playerOnFloor.current,
-        playerVelocity,
-    });
-}
