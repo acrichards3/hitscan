@@ -1,4 +1,4 @@
-import { Vector3, Clock } from "three";
+import { Vector3, type Clock } from "three";
 
 export const idle = (): { x: number; y: number } => {
     const amplitude = 0.005;

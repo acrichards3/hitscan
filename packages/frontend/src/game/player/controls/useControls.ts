@@ -1,6 +1,7 @@
 import React from "react";
 import { useJump } from "./useJump";
 import { useMove } from "./useMove";
+import { useCrouch } from "./useCrouch";
 import type { Camera } from "@react-three/fiber";
 import type { Euler, Vector3 } from "three";
 import type { PlayerState } from "@fps/lib";
@@ -20,14 +21,21 @@ interface HandleControlsProps {
 }
 
 export const useControls = (props: UseControlsProps) => {
+    const { crouch } = useCrouch();
     const { jump } = useJump();
     const { move } = useMove();
 
     const handleControls = React.useCallback(
         (controlProps: HandleControlsProps) => {
+            crouch({
+                gamepad: controlProps.gamepad,
+                playerStateRef: props.playerStateRef,
+            });
+
             jump({
                 gamepad: controlProps.gamepad,
                 playerOnFloor: props.playerOnFloor.current,
+                playerStateRef: props.playerStateRef,
                 playerVelocity: props.playerVelocity,
             });
 
@@ -42,7 +50,7 @@ export const useControls = (props: UseControlsProps) => {
                 playerVelocity: props.playerVelocity,
             });
         },
-        [props, jump, move],
+        [props, crouch, jump, move],
     );
 
     return { handleControls };

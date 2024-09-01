@@ -7,6 +7,8 @@ import { Quaternion, Vector3, type Group, type Clock } from "three";
 import type { Camera } from "@react-three/fiber";
 import type { PlayerState } from "@fps/lib";
 
+// TODO: Refactor if else nonsense
+
 interface WeaponAnimationProps {
     adsOffset: Vector3;
     adsRotation: Vector3;
@@ -17,7 +19,6 @@ interface WeaponAnimationProps {
 
 export const useWeaponAnimations = (props: WeaponAnimationProps) => {
     const group = React.useRef<Group | null>(null);
-    const prevCrouchPressed = React.useRef(false);
     const playerRef = props.playerStateRef.current;
 
     const swayOffset = React.useMemo(() => new Vector3(0, 0, 0), []);
@@ -37,24 +38,27 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
                 const [leftX, leftY] = gamepad.axes;
                 if (leftX == null || leftY == null) return;
 
-                const playerIsAiming = gamepad.buttons[6]?.pressed;
                 const playerIsWalking = Math.abs(leftX) > 0.1 || Math.abs(leftY) > 0.1;
-                const isCrouchPressed = gamepad.buttons[1]?.pressed;
                 const isJumpPressed = gamepad.buttons[0]?.pressed;
-                const walkingSpeed = Math.sqrt(leftX ** 4 + leftY ** 4);
+                let walkingSpeed = Math.sqrt(leftX ** 4 + leftY ** 4);
+
+                // Cut movement speed in half when crouching
+                if (playerRef.isCrouching) {
+                    walkingSpeed /= 2;
+                }
+
+                // Cut movement speed in half when aiming (this stacks with crouching)
+                if (playerRef.isAiming) {
+                    walkingSpeed /= 2;
+                }
 
                 // Update isAiming based on gamepad input
-                playerRef.isAiming = !!playerIsAiming;
+                playerRef.isAiming = !!gamepad.buttons[6]?.pressed;
 
-                // Determine if player is crouching
-                if (isCrouchPressed && !prevCrouchPressed.current) {
-                    playerRef.isCrouching = !playerRef.isCrouching;
-                }
                 // Set player to standing if crouch button is pressed while jumping
                 if (isJumpPressed && playerRef.isCrouching) {
                     playerRef.isCrouching = false;
                 }
-                prevCrouchPressed.current = !!isCrouchPressed;
 
                 // Determine if player is sprinting
                 if (leftY < -0.9 && gamepad.buttons[10]?.pressed && !playerRef.isSprinting) {
@@ -120,5 +124,3 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
 
     return { group, handleWeaponAnimations };
 };
-
-// Applying animations

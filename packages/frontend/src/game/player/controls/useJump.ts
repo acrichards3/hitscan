@@ -1,7 +1,10 @@
 import React from "react";
-import type { PlayerControls } from "../playerControls";
+import type { PlayerControls } from "../Player";
 
-type JumpProps = Pick<PlayerControls, "gamepad" | "playerOnFloor" | "playerVelocity">;
+type JumpProps = Pick<
+    PlayerControls,
+    "gamepad" | "playerOnFloor" | "playerVelocity" | "playerStateRef"
+>;
 
 export const useJump = () => {
     const wasJumpPressed = React.useRef(false);
@@ -14,6 +17,12 @@ export const useJump = () => {
         // Allow jump only if the player is on the floor, the jump button is pressed, and it was not pressed in the previous frame
         if (props.playerOnFloor && isJumpPressed && !wasJumpPressed.current) {
             props.playerVelocity.y += 15;
+            props.playerStateRef.current.isJumping = true; // Update isJumping when the player jumps
+        }
+
+        if (!isJumpPressed && wasJumpPressed.current) {
+            // If the jump button is released, reset isJumping
+            props.playerStateRef.current.isJumping = false;
         }
 
         // Update the previous state of the jump button

@@ -16,6 +16,7 @@ interface UseMoveProps {
 
 export const useMove = () => {
     const move = React.useCallback((props: UseMoveProps) => {
+        const playerRef = props.playerStateRef.current;
         if (props.gamepad == null) return;
 
         const [leftX, leftY, rightX, rightY] = props.gamepad.axes.map((angle) =>
@@ -45,8 +46,18 @@ export const useMove = () => {
         // Update player position
         let moveSpeedDelta = props.delta * (props.playerOnFloor ? 25 : 8);
 
+        // Increase movement speed by 50% when sprinting
+        if (playerRef.isSprinting) {
+            moveSpeedDelta *= 1.5;
+        }
+
         // Cut movement speed in half when aiming
-        if (props.playerStateRef.current.isAiming) {
+        if (playerRef.isAiming) {
+            moveSpeedDelta /= 2;
+        }
+
+        // Cut movement speed in half when crouching (this stacks with aiming)
+        if (playerRef.isCrouching) {
             moveSpeedDelta /= 2;
         }
 
