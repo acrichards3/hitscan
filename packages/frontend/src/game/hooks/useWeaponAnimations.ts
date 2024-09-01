@@ -9,17 +9,16 @@ interface WeaponAnimationProps {
     adsRotation: Vector3;
     idleOffset: Vector3;
     idleRotation: Vector3;
+    playerStateRef: React.MutableRefObject<PlayerState>;
 }
 
 export const useWeaponAnimations = (props: WeaponAnimationProps) => {
     const group = React.useRef<Group | null>(null);
     const prevCrouchPressed = React.useRef(false);
+    const playerRef = props.playerStateRef.current;
 
     const swayOffset = React.useMemo(() => new Vector3(0, 0, 0), []);
     const cameraQuaternion = React.useMemo(() => new Quaternion(), []);
-
-    const [playerIsCrouching, setPlayerIsCrouching] = React.useState(false);
-    const [playerIsSprinting, setPlayerIsSprinting] = React.useState(false);
 
     const handleWeaponAnimations = React.useCallback(
         ({ camera, clock }: { camera: Camera; clock: Clock }) => {
@@ -43,20 +42,22 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
 
                 // Determine if player is crouching
                 if (isCrouchPressed && !prevCrouchPressed.current) {
-                    setPlayerIsCrouching(!playerIsCrouching);
+                    playerRef.isCrouching = !playerRef.isCrouching;
                 }
-                if (isJumpPressed && playerIsCrouching) {
-                    setPlayerIsCrouching(false);
+                // Set player to standing if crouch button is pressed while jumping
+                if (isJumpPressed && playerRef.isCrouching) {
+                    playerRef.isCrouching = false;
                 }
                 prevCrouchPressed.current = !!isCrouchPressed;
 
                 // Determine if player is sprinting
-                if (leftY < -0.9 && gamepad.buttons[10]?.pressed && !playerIsSprinting) {
-                    setPlayerIsSprinting(true);
-                    setPlayerIsCrouching(false);
+                if (leftY < -0.9 && gamepad.buttons[10]?.pressed && !playerRef.isSprinting) {
+                    playerRef.isSprinting = true;
+                    playerRef.isCrouching = false;
                 }
-                if (leftY > -0.9 && playerIsSprinting) {
-                    setPlayerIsSprinting(false);
+                // Determine if player is no longer sprinting
+                if (leftY > -0.9 && playerRef.isSprinting) {
+                    playerRef.isSprinting = false;
                 }
 
                 if (playerIsAiming) {
@@ -71,7 +72,7 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
                         swayOffset,
                         cameraQuaternion,
                     );
-                } else if (playerIsSprinting) {
+                } else if (playerRef.isSprinting) {
                     applySprintAnimation(group.current, props.idleOffset, props.idleRotation);
                 } else if (playerIsWalking) {
                     applyWalkingAnimation(
@@ -89,8 +90,7 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
             }
         },
         [
-            playerIsCrouching,
-            playerIsSprinting,
+            playerRef,
             props.adsOffset,
             props.adsRotation,
             props.idleOffset,
