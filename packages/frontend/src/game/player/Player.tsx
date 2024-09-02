@@ -33,12 +33,16 @@ export const Player: React.FC<PlayerProps> = (props) => {
     const playerVelocity = React.useMemo(() => new Vector3(), []);
     const playerDirection = React.useMemo(() => new Vector3(), []);
     const euler = React.useMemo(() => new Euler(0, 0, 0, "YXZ"), []);
-    const capsule = React.useMemo(
-        () => new Capsule(new Vector3(0, 10, 0), new Vector3(0, 11, 0), 0.5),
-        [],
-    );
+    // Player capsule used for collisions
+    const capsule = React.useMemo(() => {
+        const start = new Vector3(0, 10, 0);
+        const end = new Vector3(0, 11, 0);
+        const radius = 0.5;
+        return new Capsule(start, end, radius);
+    }, []);
 
     const { handleControls } = useControls({
+        capsule,
         euler,
         playerDirection,
         playerOnFloor,
@@ -61,6 +65,8 @@ export const Player: React.FC<PlayerProps> = (props) => {
                 playerOnFloor.current,
             );
         }
+
+        // console.log(props.playerStateRef.current.isSprinting);
 
         // Handle player controls
         handleControls({ camera, delta, gamepad });

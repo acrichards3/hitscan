@@ -1,4 +1,4 @@
-import { walk } from "../../functions/weaponAnimations";
+import { walk } from "../functions/walk";
 import type { Group, Vector3, Clock } from "three";
 
 interface ApplyWalk {

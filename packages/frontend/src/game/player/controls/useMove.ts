@@ -66,6 +66,7 @@ export const useMove = () => {
                 moveSpeedDelta * leftX,
             ),
         );
+
         props.playerVelocity.add(
             getForwardVector(props.camera, props.playerDirection).multiplyScalar(
                 -moveSpeedDelta * leftY,
