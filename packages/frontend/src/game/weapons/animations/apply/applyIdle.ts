@@ -1,4 +1,4 @@
-import { idle } from "../../functions/weaponAnimations";
+import { idle } from "../functions/idle";
 import type { Group, Vector3 } from "three";
 
 interface ApplyIdle {

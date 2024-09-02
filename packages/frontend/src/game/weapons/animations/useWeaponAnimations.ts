@@ -39,7 +39,8 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
                 if (leftX == null || leftY == null) return;
 
                 const playerIsWalking = Math.abs(leftX) > 0.1 || Math.abs(leftY) > 0.1;
-                const isJumpPressed = gamepad.buttons[0]?.pressed;
+                const isJumpButtonPressed = gamepad.buttons[0]?.pressed;
+                const isCrouchButtonPressed = gamepad.buttons[1]?.pressed;
                 let walkingSpeed = Math.sqrt(leftX ** 4 + leftY ** 4);
 
                 // Cut movement speed in half when crouching
@@ -56,8 +57,13 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
                 playerRef.isAiming = !!gamepad.buttons[6]?.pressed;
 
                 // Set player to standing if crouch button is pressed while jumping
-                if (isJumpPressed && playerRef.isCrouching) {
+                if (isJumpButtonPressed && playerRef.isCrouching) {
                     playerRef.isCrouching = false;
+                }
+
+                // Cancel sprint if crouch button is pressed while sprinting
+                if (isCrouchButtonPressed && playerRef.isSprinting) {
+                    playerRef.isSprinting = false;
                 }
 
                 // Determine if player is sprinting

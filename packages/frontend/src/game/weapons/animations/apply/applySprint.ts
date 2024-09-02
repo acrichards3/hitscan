@@ -1,4 +1,4 @@
-import { sprint } from "../../functions/weaponAnimations";
+import { sprint } from "../functions/sprint";
 import type { Group, Vector3 } from "three";
 
 interface ApplySprint {
