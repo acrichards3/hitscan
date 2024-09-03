@@ -40,7 +40,6 @@ export const Game: React.FC = () => {
                 position={[-10, 0, 0]} // Adjust position if necessary
                 rotation={[0, 0, 0]} // Rotate 180 degrees along the X-axis to flip
             >
-                {/* Render all available meshes from map */}
                 <primitive object={scene} />
             </group>
             <Players />
