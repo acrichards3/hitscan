@@ -1,4 +1,4 @@
-import backgroundImage from "./images/rustig_koppie_puresky_1k.hdr";
+import nightSky from "./images/nightSky.jpg";
 import { Stats, Environment } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Game } from "./Game";
@@ -10,7 +10,7 @@ export const World: React.FC = () => {
             <Canvas shadows={true}>
                 <directionalLight
                     castShadow={true}
-                    intensity={1}
+                    intensity={1.5}
                     position={[85.0, 80.0, 70.0]}
                     shadow-bias={-0.00015}
                     shadow-blur={10}
@@ -21,7 +21,7 @@ export const World: React.FC = () => {
                     shadow-mapSize={[2048, 2048]}
                     shadow-radius={4}
                 />
-                <Environment background={true} files={backgroundImage} />
+                <Environment background={true} files={nightSky} />
                 <Game />
                 <Stats />
             </Canvas>

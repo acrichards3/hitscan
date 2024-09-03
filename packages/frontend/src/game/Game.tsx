@@ -4,19 +4,20 @@ import { Player } from "./player/Player";
 import { useOctree } from "./hooks/useOctree";
 import { useGLTF } from "@react-three/drei";
 import { AK47 } from "./weapons/primary/AK47/AK47";
-import { Mesh, Quaternion, Vector3 } from "three";
+import { Quaternion, Vector3 } from "three";
 import { Eve } from "./Eve";
 import { channel } from "./utils/geckos";
 import { WEAPONS } from "./weapons/weapon";
 import type { WeaponStats } from "./weapons/weapon";
 import type { GameState, PlayerState } from "@fps/lib";
-import type { Object3D } from "three";
 
 export const Game: React.FC = () => {
     const gltf = useGLTF(testMap);
     const { nodes, scene } = gltf;
     const octree = useOctree(scene); // Handles collision detection
-    const mapMesh = nodes["Suzanne007"];
+
+    console.log("nodes", nodes);
+    console.log("gltf", gltf);
 
     const activeWeaponRef = React.useRef<WeaponStats>(WEAPONS.AK47);
 
@@ -32,18 +33,14 @@ export const Game: React.FC = () => {
         position: { x: 0, y: 0, z: 0 },
     });
 
-    if (!isMesh(mapMesh)) return null;
-
     return (
         <>
-            <group dispose={null}>
-                <mesh
-                    castShadow={true}
-                    geometry={mapMesh.geometry}
-                    material={mapMesh.material}
-                    position={[1.74, 1.04, 24.97]}
-                    receiveShadow={true}
-                />
+            <group
+                dispose={null}
+                position={[-10, 0, 0]} // Adjust position if necessary
+                rotation={[0, 0, 0]} // Rotate 180 degrees along the X-axis to flip
+            >
+                <primitive object={scene} />
             </group>
             <Players />
             <Player
@@ -77,5 +74,3 @@ const Players = () => {
             />
         ));
 };
-
-const isMesh = (obj: Object3D | undefined | null): obj is Mesh => obj instanceof Mesh;
