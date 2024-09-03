@@ -1,13 +1,16 @@
 import React from "react";
+import { useCrouch } from "./useCrouch";
 import { useJump } from "./useJump";
 import { useMove } from "./useMove";
-import { useCrouch } from "./useCrouch";
+import { useShoot } from "./useShoot";
+import type { WeaponStats } from "../../weapons/weapon";
 import type { Capsule } from "three/examples/jsm/Addons.js";
 import type { Camera } from "@react-three/fiber";
 import type { Euler, Vector3 } from "three";
 import type { PlayerState } from "@fps/lib";
 
 interface UseControlsProps {
+    activeWeaponRef: React.MutableRefObject<WeaponStats>;
     capsule: Capsule;
     euler: Euler;
     playerDirection: Vector3;
@@ -26,6 +29,7 @@ export const useControls = (props: UseControlsProps) => {
     const { crouch } = useCrouch();
     const { jump } = useJump();
     const { move } = useMove();
+    const { shoot } = useShoot();
 
     const handleControls = React.useCallback(
         (controlProps: HandleControlsProps) => {
@@ -52,8 +56,14 @@ export const useControls = (props: UseControlsProps) => {
                 playerStateRef: props.playerStateRef,
                 playerVelocity: props.playerVelocity,
             });
+
+            shoot({
+                activeWeaponRef: props.activeWeaponRef,
+                gamepad: controlProps.gamepad,
+                playerStateRef: props.playerStateRef,
+            });
         },
-        [props, crouch, jump, move],
+        [props, crouch, jump, move, shoot],
     );
 
     return { handleControls };

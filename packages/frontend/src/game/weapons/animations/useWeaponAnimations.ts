@@ -6,6 +6,7 @@ import { applyWalk } from "./apply/applyWalk";
 import { Quaternion, Vector3, type Group, type Clock } from "three";
 import type { Camera } from "@react-three/fiber";
 import type { PlayerState } from "@fps/lib";
+import type { WeaponStats } from "../weapon";
 
 // TODO: Refactor if else nonsense
 
@@ -15,6 +16,7 @@ interface WeaponAnimationProps {
     idleOffset: Vector3;
     idleRotation: Vector3;
     playerStateRef: React.MutableRefObject<PlayerState>;
+    stats: WeaponStats;
 }
 
 export const useWeaponAnimations = (props: WeaponAnimationProps) => {

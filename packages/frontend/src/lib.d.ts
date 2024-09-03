@@ -1,4 +1,5 @@
-import { Vector3 } from "three";
+import type { Capsule } from "three/examples/jsm/Addons.js";
+import type { Vector3 } from "three";
 import "three/examples/jsm/math/Octree.js";
 
 declare module "three/examples/jsm/math/Octree.js" {
