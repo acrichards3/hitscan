@@ -7,6 +7,7 @@ import { teleportPlayerIfOob, updatePlayer } from "./playerFunctions";
 import { channel } from "../utils/geckos";
 import type { Camera } from "three";
 import type { Octree } from "three/examples/jsm/Addons.js";
+import type { WeaponStats } from "../weapons/weapon";
 import type { PlayerState } from "@fps/lib";
 
 const STEPS_PER_FRAME = 10;
@@ -23,6 +24,7 @@ export interface PlayerControls {
 }
 
 interface PlayerProps {
+    activeWeaponRef: React.MutableRefObject<WeaponStats>;
     children?: React.ReactNode;
     octree: Octree;
     playerStateRef: React.MutableRefObject<PlayerState>;
@@ -42,6 +44,7 @@ export const Player: React.FC<PlayerProps> = (props) => {
     }, []);
 
     const { handleControls } = useControls({
+        activeWeaponRef: props.activeWeaponRef,
         capsule,
         euler,
         playerDirection,
@@ -65,8 +68,6 @@ export const Player: React.FC<PlayerProps> = (props) => {
                 playerOnFloor.current,
             );
         }
-
-        // console.log(props.playerStateRef.current.isSprinting);
 
         // Handle player controls
         handleControls({ camera, delta, gamepad });

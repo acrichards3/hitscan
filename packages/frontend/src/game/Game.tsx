@@ -3,10 +3,12 @@ import testMap from "./maps/testMap.glb";
 import { Player } from "./player/Player";
 import { useOctree } from "./hooks/useOctree";
 import { useGLTF } from "@react-three/drei";
-import { AR } from "./weapons/AR/AR";
+import { AK47 } from "./weapons/primary/AK47/AK47";
 import { Mesh, Quaternion, Vector3 } from "three";
 import { Eve } from "./Eve";
 import { channel } from "./utils/geckos";
+import { WEAPONS } from "./weapons/weapon";
+import type { WeaponStats } from "./weapons/weapon";
 import type { GameState, PlayerState } from "@fps/lib";
 import type { Object3D } from "three";
 
@@ -15,6 +17,8 @@ export const Game: React.FC = () => {
     const { nodes, scene } = gltf;
     const octree = useOctree(scene); // Handles collision detection
     const mapMesh = nodes["Suzanne007"];
+
+    const activeWeaponRef = React.useRef<WeaponStats>(WEAPONS.AK47);
 
     // Ref prevents re-renders particularly in places where useFrame is used
     const playerStateRef = React.useRef<PlayerState>({
@@ -42,8 +46,12 @@ export const Game: React.FC = () => {
                 />
             </group>
             <Players />
-            <Player octree={octree} playerStateRef={playerStateRef}>
-                <AR playerStateRef={playerStateRef} />
+            <Player
+                activeWeaponRef={activeWeaponRef}
+                octree={octree}
+                playerStateRef={playerStateRef}
+            >
+                <AK47 playerStateRef={playerStateRef} />
             </Player>
         </>
     );
