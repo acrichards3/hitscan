@@ -8,15 +8,25 @@ type ShootProps = Pick<PlayerControls, "playerStateRef" | "gamepad"> & {
 
 export const useShoot = () => {
     const wasShootPressed = React.useRef(false);
+    const lastShotTime = React.useRef(0);
 
     const shoot = (props: ShootProps) => {
         if (props.gamepad == null) return;
 
         const isShootPressed = !!props.gamepad.buttons[7]?.pressed;
-        const firingMode = props.activeWeaponRef.current.firingMode; // Can be "Single" | "Auto"
+        const firingMode = props.activeWeaponRef.current.firingMode;
+        const fireRateMs = props.activeWeaponRef.current.fireRateMs;
+
+        const currentTime = Date.now();
 
         if (firingMode === "Auto") {
-            props.playerStateRef.current.isShooting = isShootPressed;
+            // Auto fire (only shoot on button press AND weapon fire rate interval)
+            if (isShootPressed && currentTime - lastShotTime.current >= fireRateMs) {
+                props.playerStateRef.current.isShooting = true;
+                lastShotTime.current = currentTime;
+            } else {
+                props.playerStateRef.current.isShooting = false;
+            }
         }
 
         // TODO: Add this feature
@@ -27,6 +37,7 @@ export const useShoot = () => {
         if (firingMode === "Single") {
             if (isShootPressed && !wasShootPressed.current) {
                 props.playerStateRef.current.isShooting = true;
+                lastShotTime.current = currentTime;
             } else {
                 props.playerStateRef.current.isShooting = false;
             }
