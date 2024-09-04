@@ -1,4 +1,5 @@
 import AK47Mesh from "./AK47.glb";
+import ShootSound from "./AK47.mp3";
 import { Vector3 } from "three";
 import { WeaponChild } from "../../WeaponChild";
 import { WEAPONS } from "../../weapon";
@@ -19,6 +20,7 @@ export const AK47: React.FC<ARProps> = ({ playerStateRef }) => {
             meshPath={AK47Mesh}
             playerStateRef={playerStateRef}
             scale={0.15}
+            shootBufferUrl={ShootSound}
             stats={WEAPONS.AK47}
         />
     );
