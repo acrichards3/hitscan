@@ -14,6 +14,12 @@ export type FiringMode = "Single" | "Burst" | "Auto";
 
 export type DamageType = "Ballistic" | "Explosive" | "Melee";
 
+export type Recoil = {
+    horizontal: number; // Side to side recoil
+    kickback: number; // Forward and backward recoil
+    vertical: number; // Up and down recoil
+};
+
 // All time related fields should be set in milliseconds
 // Player health is out of 100.0
 // Note that recoil moves the camera, not the weapon!
@@ -26,12 +32,11 @@ export interface WeaponStats {
     displayName: string; // The name of the weapon that is displayed to the player
     fireRateMs: number; // The wait time between shots in milliseconds
     firingMode: FiringMode; // The firing mode of the weapon
-    horizontalRecoil: number; // The amount of horizontal recoil the weapon has
     maxDamagePerBullet: number; // Maximum damage the weapon can do per bullet. Things like damagerange and bullet hit location should be handled in the game logic to reduce this number.
+    recoil: Recoil; // The recoil of the weapon
     reloadTimeMs: number; // The time it takes to reload the weapon in milliseconds
     reserveAmmo: number; // Recommended to be a multiple of bulletsPerMagazine
     shotsPerBurst?: number; // Only set if firingMode is "Burst"
-    verticalRecoil: number; // The amount of vertical recoil the weapon has
     weaponClass: WeaponClass; // The class of the weapon
     weaponType: WeaponType; // The type of weapon
     weight: number; // Determines how fast the player can move with the weapon
@@ -51,11 +56,14 @@ export const WEAPONS: Record<Weapon, WeaponStats> = {
         displayName: "AK-47",
         fireRateMs: 100,
         firingMode: "Auto",
-        horizontalRecoil: 0,
         maxDamagePerBullet: 10,
+        recoil: {
+            horizontal: 0.01,
+            kickback: 0.1,
+            vertical: 0.008,
+        },
         reloadTimeMs: 1000,
         reserveAmmo: 100,
-        verticalRecoil: 0,
         weaponClass: "Assault Rifle",
         weaponType: "Primary",
         weight: 1,
@@ -69,11 +77,14 @@ export const WEAPONS: Record<Weapon, WeaponStats> = {
         displayName: "Ray Gun",
         fireRateMs: 100,
         firingMode: "Single",
-        horizontalRecoil: 0,
         maxDamagePerBullet: 10,
+        recoil: {
+            horizontal: 0.1,
+            kickback: 5,
+            vertical: 0.1,
+        },
         reloadTimeMs: 1000,
         reserveAmmo: 100,
-        verticalRecoil: 0,
         weaponClass: "Pistol",
         weaponType: "Secondary",
         weight: 1,

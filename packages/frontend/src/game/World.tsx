@@ -1,4 +1,4 @@
-import nightSky from "./images/nightSky.jpg";
+import sky from "./images/sky.hdr";
 import { Stats, Environment } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Game } from "./Game";
@@ -21,7 +21,7 @@ export const World: React.FC = () => {
                     shadow-mapSize={[2048, 2048]}
                     shadow-radius={4}
                 />
-                <Environment background={true} files={nightSky} />
+                <Environment background={true} files={sky} />
                 <Game />
                 <Stats />
             </Canvas>
