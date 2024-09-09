@@ -1,6 +1,7 @@
 import React from "react";
 import { applyADS } from "./apply/applyADS";
 import { applyIdle } from "./apply/applyIdle";
+import { applyShoot } from "./apply/applyShoot";
 import { applySprint } from "./apply/applySprint";
 import { applyWalk } from "./apply/applyWalk";
 import { Quaternion, Vector3, type Group, type Clock } from "three";
@@ -44,6 +45,19 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
                 const isJumpButtonPressed = gamepad.buttons[0]?.pressed;
                 const isCrouchButtonPressed = gamepad.buttons[1]?.pressed;
                 let walkingSpeed = Math.sqrt(leftX ** 4 + leftY ** 4);
+
+                // Handle shooting animations
+                if (playerRef.isShooting) {
+                    applyShoot({
+                        camera,
+                        clock,
+                        group: group.current,
+                        idleOffset: props.idleOffset,
+                        idleRotation: props.idleRotation,
+                        playerStateRef: props.playerStateRef,
+                        stats: props.stats,
+                    });
+                }
 
                 // Cut movement speed in half when crouching
                 if (playerRef.isCrouching) {
@@ -125,6 +139,8 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
             props.adsRotation,
             props.idleOffset,
             props.idleRotation,
+            props.playerStateRef,
+            props.stats,
             swayOffset,
             cameraQuaternion,
         ],

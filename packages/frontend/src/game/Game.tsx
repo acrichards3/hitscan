@@ -8,18 +8,21 @@ import { Quaternion, Vector3 } from "three";
 import { Eve } from "./Eve";
 import { channel } from "./utils/geckos";
 import { WEAPONS } from "./weapons/weapon";
+import { useFrame } from "@react-three/fiber";
+import { Raycaster, Vector2, Mesh } from "three";
+import type { Object3D } from "three";
 import type { WeaponStats } from "./weapons/weapon";
 import type { GameState, PlayerState } from "@fps/lib";
 
 export const Game: React.FC = () => {
     const gltf = useGLTF(testMap);
-    const { nodes, scene } = gltf;
+    const { scene } = gltf; // Remember that you can add nodes back in here
     const octree = useOctree(scene); // Handles collision detection
-
-    console.log("nodes", nodes);
-    console.log("gltf", gltf);
+    const raycaster = new Raycaster();
+    const screenCenter = new Vector2(0, 0);
 
     const activeWeaponRef = React.useRef<WeaponStats>(WEAPONS.AK47);
+    const [hitMarkers, setHitMarkers] = React.useState<Vector3[]>([]);
 
     // Ref prevents re-renders particularly in places where useFrame is used
     const playerStateRef = React.useRef<PlayerState>({
@@ -31,6 +34,27 @@ export const Game: React.FC = () => {
         isSprinting: false,
         isWalking: false,
         position: { x: 0, y: 0, z: 0 },
+    });
+
+    useFrame(({ camera }) => {
+        // Handlec raycasting when shooting
+        if (playerStateRef.current.isShooting) {
+            raycaster.setFromCamera(screenCenter, camera);
+
+            const sceneObjects: Object3D[] = [];
+            scene.traverse((obj) => {
+                if (obj instanceof Mesh) {
+                    sceneObjects.push(obj);
+                }
+            });
+            const meshObjects = sceneObjects.filter((obj): obj is Mesh => obj instanceof Mesh);
+            const intersects = raycaster.intersectObjects(meshObjects, true);
+
+            if (intersects.length > 0) {
+                const hitPoint = intersects.at(0)?.point;
+                if (hitPoint) setHitMarkers((prevMarkers) => [...prevMarkers, hitPoint]);
+            }
+        }
     });
 
     return (
@@ -50,6 +74,12 @@ export const Game: React.FC = () => {
             >
                 <AK47 playerStateRef={playerStateRef} />
             </Player>
+            {hitMarkers.map((marker, index) => (
+                <mesh key={index} position={marker}>
+                    <sphereGeometry args={[0.1, 16, 16]} />
+                    <meshBasicMaterial color="red" />
+                </mesh>
+            ))}
         </>
     );
 };
