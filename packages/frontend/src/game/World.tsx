@@ -1,4 +1,4 @@
-import sky from "./images/sky.hdr";
+import sky from "./images/daySky.hdr";
 import { Stats, Environment } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Game } from "./Game";

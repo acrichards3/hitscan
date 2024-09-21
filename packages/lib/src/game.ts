@@ -4,13 +4,14 @@ export interface GameState {
 
 export interface PlayerState {
     direction: Quaternion;
-    position: Vector3;
-    isWalking: boolean;
-    isSprinting: boolean;
+    isAiming: boolean;
     isCrouching: boolean;
     isJumping: boolean;
-    isAiming: boolean;
+    isProne: boolean;
     isShooting: boolean;
+    isSprinting: boolean;
+    isWalking: boolean;
+    position: Vector3;
 }
 
 export interface Quaternion extends Vector3 {

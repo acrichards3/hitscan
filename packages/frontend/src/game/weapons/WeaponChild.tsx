@@ -3,8 +3,8 @@ import { useWeaponAnimations } from "./animations/useWeaponAnimations";
 import { useWeaponSounds } from "./sounds/useWeaponSounds";
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { Mesh } from "three";
-import type { Object3D, Vector3 } from "three";
+import { Mesh, Vector3, Quaternion } from "three";
+import type { Object3D, Group } from "three";
 import type { WeaponStats } from "./weapon";
 import type { PlayerState } from "@fps/lib";
 
@@ -22,8 +22,17 @@ interface WeaponChildProps {
 
 export const WeaponChild: React.FC<WeaponChildProps> = (props) => {
     const audioContextRef = React.useRef(new AudioContext());
+    const group = React.useRef<Group | null>(null);
+    const swayOffestRef = React.useRef(new Vector3(0, 0, 0));
+    const cameraQuaternionRef = React.useRef(new Quaternion());
     const { nodes } = useGLTF(props.meshPath);
-    const { group, handleWeaponAnimations } = useWeaponAnimations(props);
+    const { handleWeaponAnimations } = useWeaponAnimations({
+        ...props,
+        cameraQuaternionRef,
+        group,
+        swayOffestRef,
+    });
+
     const { playShootSound } = useWeaponSounds({
         audioContext: audioContextRef.current,
         playerStateRef: props.playerStateRef,

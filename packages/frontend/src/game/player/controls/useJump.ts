@@ -16,8 +16,14 @@ export const useJump = () => {
 
         // Allow jump only if the player is on the floor, the jump button is pressed, and it was not pressed in the previous frame
         if (props.playerOnFloor && isJumpPressed && !wasJumpPressed.current) {
-            props.playerVelocity.y += 15;
-            props.playerStateRef.current.isJumping = true; // Update isJumping when the player jumps
+            // Only allow jumping if the player is not prone AND not crouching
+            if (
+                !props.playerStateRef.current.isProne &&
+                !props.playerStateRef.current.isCrouching
+            ) {
+                props.playerVelocity.y += 15;
+                props.playerStateRef.current.isJumping = true; // Update isJumping when the player jumps
+            }
         }
 
         if (!isJumpPressed && wasJumpPressed.current) {

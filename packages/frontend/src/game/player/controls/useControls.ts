@@ -1,5 +1,5 @@
 import React from "react";
-import { useCrouch } from "./useCrouch";
+import { useCrouchProne } from "./useCrouchProne";
 import { useJump } from "./useJump";
 import { useMove } from "./useMove";
 import { useShoot } from "./useShoot";
@@ -26,14 +26,14 @@ interface HandleControlsProps {
 }
 
 export const useControls = (props: UseControlsProps) => {
-    const { crouch } = useCrouch();
+    const { crouchProne } = useCrouchProne();
     const { jump } = useJump();
     const { move } = useMove();
     const { shoot } = useShoot();
 
     const handleControls = React.useCallback(
         (controlProps: HandleControlsProps) => {
-            crouch({
+            crouchProne({
                 capsule: props.capsule,
                 gamepad: controlProps.gamepad,
                 playerStateRef: props.playerStateRef,
@@ -63,7 +63,7 @@ export const useControls = (props: UseControlsProps) => {
                 playerStateRef: props.playerStateRef,
             });
         },
-        [props, crouch, jump, move, shoot],
+        [props, crouchProne, jump, move, shoot],
     );
 
     return { handleControls };

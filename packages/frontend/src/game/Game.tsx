@@ -30,6 +30,7 @@ export const Game: React.FC = () => {
         isAiming: false,
         isCrouching: false,
         isJumping: false,
+        isProne: false,
         isShooting: false,
         isSprinting: false,
         isWalking: false,
