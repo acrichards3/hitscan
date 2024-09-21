@@ -61,6 +61,11 @@ export const useMove = () => {
             moveSpeedDelta /= 2;
         }
 
+        // Cut movement speed into a quarter when prone (this stacks with crouching)
+        if (playerRef.isProne) {
+            moveSpeedDelta /= 4;
+        }
+
         props.playerVelocity.add(
             getSideVector(props.camera, props.playerDirection).multiplyScalar(
                 moveSpeedDelta * leftX,
