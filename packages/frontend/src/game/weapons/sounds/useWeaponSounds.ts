@@ -1,4 +1,5 @@
 import React from "react";
+import { resolve } from "../../utils/resolve";
 import type { WeaponStats } from "../weapon";
 import type { MutableRefObject } from "react";
 import type { PlayerState } from "@fps/lib";
@@ -24,15 +25,14 @@ export const useWeaponSounds = ({
     // Load the shootBuffer when the hook is initialized
     React.useEffect(() => {
         const loadShootBuffer = async () => {
-            try {
-                const response = await fetch(shootBufferUrl);
-                const arrayBuffer = await response.arrayBuffer();
-                if (audioContext) {
-                    const buffer = await audioContext.decodeAudioData(arrayBuffer);
-                    shootBufferRef.current = buffer;
-                }
-            } catch (error) {
-                console.error("Failed to load shoot sound buffer:", error);
+            const response = await resolve(fetch(shootBufferUrl));
+
+            if (!response.success) console.error("Failed to load sound buffer: ", response.error);
+
+            if (audioContext && response.success) {
+                const arrayBuffer = await response.data.arrayBuffer();
+                const buffer = await audioContext.decodeAudioData(arrayBuffer);
+                shootBufferRef.current = buffer;
             }
         };
 
