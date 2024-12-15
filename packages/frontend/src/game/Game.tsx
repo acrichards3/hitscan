@@ -71,9 +71,8 @@ export const Game: React.FC = () => {
                 activeWeaponRef={activeWeaponRef}
                 octree={octree}
                 playerStateRef={playerStateRef}
-            >
-                <AK47 playerStateRef={playerStateRef} />
-            </Player>
+            />
+            <AK47 playerStateRef={playerStateRef} />
             {hitMarkers.map((marker, index) => (
                 <mesh key={index} position={marker}>
                     <sphereGeometry args={[0.1, 16, 16]} />
