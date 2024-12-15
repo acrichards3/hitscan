@@ -1,7 +1,8 @@
 import { Vector3 } from "three";
-import type { Group } from "three";
+import type { Clock, Group } from "three";
 
 interface ApplySprint {
+    clock: Clock;
     group: Group;
     idleOffset: Vector3;
     idleRotation: Vector3;
@@ -10,19 +11,19 @@ interface ApplySprint {
 export const sprint = (props: ApplySprint) => {
     const { group, idleOffset, idleRotation } = props;
 
-    group.rotateX(idleRotation.x + sprintCoordinates().rotate.x);
-    group.rotateY(idleRotation.y + sprintCoordinates().rotate.y);
-    group.rotateZ(idleRotation.z + sprintCoordinates().rotate.z);
-    group.translateX(idleOffset.x + sprintCoordinates().translate.x);
-    group.translateY(idleOffset.y + sprintCoordinates().translate.y);
-    group.translateZ(idleOffset.z + sprintCoordinates().translate.z);
+    group.rotateX(idleRotation.x + sprintCoordinates(props.clock).rotate.x);
+    group.rotateY(idleRotation.y + sprintCoordinates(props.clock).rotate.y);
+    group.rotateZ(idleRotation.z + sprintCoordinates(props.clock).rotate.z);
+    group.translateX(idleOffset.x + sprintCoordinates(props.clock).translate.x);
+    group.translateY(idleOffset.y + sprintCoordinates(props.clock).translate.y);
+    group.translateZ(idleOffset.z + sprintCoordinates(props.clock).translate.z);
 };
 
 // TODO: Define Vector3's outside of useFrame loop for better performance
-const sprintCoordinates = (): { rotate: Vector3; translate: Vector3 } => {
+const sprintCoordinates = (clock: Clock): { rotate: Vector3; translate: Vector3 } => {
     const amplitude = 0.01; // Base amplitude for subtle movements
     const frequency = 4.4; // Frequency adjusted for realistic bobs and strides
-    const time = Date.now() / 1000;
+    const time = clock.getElapsedTime();
 
     // Rotation simulates looking direction or head bob slightly
     const rotate = new Vector3(

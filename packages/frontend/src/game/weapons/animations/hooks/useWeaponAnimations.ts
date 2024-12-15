@@ -24,16 +24,20 @@ interface WeaponAnimationProps {
 export const useWeaponAnimations = (props: WeaponAnimationProps) => {
     useFrame(({ camera, clock }) => {
         if (!props.group.current) return;
+
         const [gamepad] = navigator.getGamepads();
         const playerRef = props.playerStateRef.current;
         const swayOffset = props.swayOffestRef.current;
         const cameraQuaternion = props.cameraQuaternionRef.current;
 
-        // props.group.current.position.copy(camera.position);
         props.group.current.position.set(camera.position.x, camera.position.y, camera.position.z);
         props.group.current.rotation.setFromQuaternion(camera.quaternion);
-        camera.near = 0.01; // Prevents gun from clipping through camera
-        camera.updateProjectionMatrix();
+
+        // Prevents gun from clipping through camera
+        if (camera.near !== 0.01) {
+            camera.near = 0.01;
+            camera.updateProjectionMatrix();
+        }
 
         // Default to idle if no gamepad is connected
         if (gamepad == null) {
@@ -86,6 +90,7 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
 
         if (playerRef.isSprinting) {
             sprint({
+                clock,
                 group: props.group.current,
                 idleOffset: props.idleOffset,
                 idleRotation: props.idleRotation,

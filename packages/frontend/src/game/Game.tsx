@@ -4,12 +4,11 @@ import { Player } from "./player/Player";
 import { useOctree } from "./hooks/useOctree";
 import { useGLTF } from "@react-three/drei";
 import { AK47 } from "./weapons/primary/AK47/AK47";
-import { Quaternion, Vector3 } from "three";
 import { Eve } from "./Eve";
 import { channel } from "./utils/geckos";
 import { WEAPONS } from "./weapons/weapon";
 import { useFrame } from "@react-three/fiber";
-import { Raycaster, Vector2, Mesh } from "three";
+import { Raycaster, Vector2, Vector3, Quaternion, Mesh } from "three";
 import type { Object3D } from "three";
 import type { WeaponStats } from "./weapons/weapon";
 import type { GameState, PlayerState } from "@fps/lib";
@@ -26,7 +25,7 @@ export const Game: React.FC = () => {
 
     // Ref prevents re-renders particularly in places where useFrame is used
     const playerStateRef = React.useRef<PlayerState>({
-        direction: { w: 0, x: 0, y: 0, z: 0 },
+        direction: new Quaternion(0, 0, 0, 1),
         isAiming: false,
         isCrouching: false,
         isJumping: false,
@@ -34,11 +33,11 @@ export const Game: React.FC = () => {
         isShooting: false,
         isSprinting: false,
         isWalking: false,
-        position: { x: 0, y: 0, z: 0 },
+        position: new Vector3(0, 0, 0),
     });
 
     useFrame(({ camera }) => {
-        // Handlec raycasting when shooting
+        // Handle raycasting when shooting
         if (playerStateRef.current.isShooting) {
             raycaster.setFromCamera(screenCenter, camera);
 
@@ -78,7 +77,7 @@ export const Game: React.FC = () => {
             {hitMarkers.map((marker, index) => (
                 <mesh key={index} position={marker}>
                     <sphereGeometry args={[0.1, 16, 16]} />
-                    <meshBasicMaterial color="red" />
+                    <meshBasicMaterial color="blue" />
                 </mesh>
             ))}
         </>
