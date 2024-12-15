@@ -1,6 +1,33 @@
-import type { Clock } from "three";
+import type { Group, Vector3, Clock } from "three";
 
-export const walk = (() => {
+interface ApplyWalk {
+    clock: Clock;
+    group: Group;
+    idleOffset: Vector3;
+    idleRotation: Vector3;
+    walkingSpeed: number;
+}
+
+/**
+ * Applies the walking animation
+ * @param props - The group, idle offset, idle rotation, and walking speed to apply to the weapon
+ */
+export const walk = (props: ApplyWalk) => {
+    const { clock, group, idleOffset, idleRotation, walkingSpeed } = props;
+    const walkingAmplitude = 0.01;
+
+    group.rotateX(idleRotation.x);
+    group.rotateY(idleRotation.y);
+    group.rotateZ(idleRotation.z);
+    group.translateX(idleOffset.x + walkCoordinates(walkingAmplitude, clock, walkingSpeed).x);
+    group.translateY(idleOffset.y + walkCoordinates(walkingAmplitude, clock, walkingSpeed).y);
+    group.translateZ(idleOffset.z);
+};
+
+/**
+ * Generates a movement pattern for the walking animation
+ */
+export const walkCoordinates = (() => {
     let previousElapsedTime = 0;
     let currentFrequency = 0;
     let phase = 0;

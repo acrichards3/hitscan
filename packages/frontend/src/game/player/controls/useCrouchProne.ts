@@ -36,8 +36,8 @@ export const useCrouchProne = () => {
             crouchHoldStart.current = performance.now(); // Start timer for prone
             proneAttempted.current = false; // Reset prone attempt flag
 
+            // If player is prone, pressing crouch brings them to crouch
             if (props.playerStateRef.current.isProne) {
-                // If player is prone, pressing crouch brings them to crouch
                 props.playerStateRef.current.isProne = false;
                 props.playerStateRef.current.isCrouching = true;
             } else {

@@ -1,5 +1,5 @@
 import React from "react";
-import { useWeaponAnimations } from "./animations/useWeaponAnimations";
+import { useWeaponAnimations } from "./animations/hooks/useWeaponAnimations";
 import { useWeaponSounds } from "./sounds/useWeaponSounds";
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
@@ -26,13 +26,16 @@ export const WeaponChild: React.FC<WeaponChildProps> = (props) => {
     const swayOffestRef = React.useRef(new Vector3(0, 0, 0));
     const cameraQuaternionRef = React.useRef(new Quaternion());
     const { nodes } = useGLTF(props.meshPath);
-    const { handleWeaponAnimations } = useWeaponAnimations({
+
+    // Handles updates for weapon animations
+    useWeaponAnimations({
         ...props,
         cameraQuaternionRef,
         group,
         swayOffestRef,
     });
 
+    // TODO: Fix this trash
     const { playShootSound } = useWeaponSounds({
         audioContext: audioContextRef.current,
         playerStateRef: props.playerStateRef,
@@ -40,11 +43,8 @@ export const WeaponChild: React.FC<WeaponChildProps> = (props) => {
         stats: props.stats,
     });
 
-    // Handles updates for weapon animations
-    useFrame(({ camera, clock }) => {
-        // TODO: Figure out way to make sound available instantly
+    useFrame(() => {
         if (audioContextRef.current.state === "suspended") void audioContextRef.current.resume(); // User has to interact with the page to enable audio
-        handleWeaponAnimations({ camera, clock });
         playShootSound();
     });
 
