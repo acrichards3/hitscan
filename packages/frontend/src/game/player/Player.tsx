@@ -32,25 +32,19 @@ interface PlayerProps {
 
 export const Player: React.FC<PlayerProps> = (props) => {
     const playerOnFloor = React.useRef(false);
-    const playerVelocity = React.useMemo(() => new Vector3(), []);
-    const playerDirection = React.useMemo(() => new Vector3(), []);
-    const euler = React.useMemo(() => new Euler(0, 0, 0, "YXZ"), []);
-    // Player capsule used for collisions
-    const capsule = React.useMemo(() => {
-        const start = new Vector3(0, 10, 0);
-        const end = new Vector3(0, 11, 0);
-        const radius = 0.5;
-        return new Capsule(start, end, radius);
-    }, []);
+    const playerVelocity = React.useRef(new Vector3());
+    const playerDirection = React.useRef(new Vector3());
+    const euler = React.useRef(new Euler(0, 0, 0, "XYZ"));
+    const capsule = React.useRef(new Capsule(new Vector3(0, 10, 0), new Vector3(0, 11, 0), 0.5));
 
     const { handleControls } = useControls({
         activeWeaponRef: props.activeWeaponRef,
-        capsule,
-        euler,
-        playerDirection,
+        capsule: capsule.current,
+        euler: euler.current,
+        playerDirection: playerDirection.current,
         playerOnFloor,
         playerStateRef: props.playerStateRef,
-        playerVelocity,
+        playerVelocity: playerVelocity.current,
     });
 
     useFrame(({ camera }, delta) => {
@@ -63,8 +57,8 @@ export const Player: React.FC<PlayerProps> = (props) => {
                 camera,
                 deltaSteps,
                 props.octree,
-                capsule,
-                playerVelocity,
+                capsule.current,
+                playerVelocity.current,
                 playerOnFloor.current,
             );
         }
@@ -73,7 +67,7 @@ export const Player: React.FC<PlayerProps> = (props) => {
         handleControls({ camera, delta, gamepad });
 
         // Teleport player if out of bounds
-        teleportPlayerIfOob(camera, capsule, playerVelocity);
+        teleportPlayerIfOob(camera, capsule.current, playerVelocity.current);
 
         // Send player position to server
         channel.emit("client-tick", {

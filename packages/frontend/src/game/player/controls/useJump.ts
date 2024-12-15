@@ -41,8 +41,6 @@ export const useJump = () => {
             isCrouchDelayOver &&
             isProneDelayOver;
 
-        console.log(allowedToJump);
-
         // Allow jump only if the player is on the floor, the jump button is pressed, and it was not pressed in the previous frame
         if (allowedToJump && isJumpPressed) {
             props.playerVelocity.y += 15;

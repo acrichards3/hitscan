@@ -38,7 +38,7 @@ export const Game: React.FC = () => {
     });
 
     useFrame(({ camera }) => {
-        // Handlec raycasting when shooting
+        // Handle raycasting when shooting
         if (playerStateRef.current.isShooting) {
             raycaster.setFromCamera(screenCenter, camera);
 
@@ -78,7 +78,7 @@ export const Game: React.FC = () => {
             {hitMarkers.map((marker, index) => (
                 <mesh key={index} position={marker}>
                     <sphereGeometry args={[0.1, 16, 16]} />
-                    <meshBasicMaterial color="red" />
+                    <meshBasicMaterial color="blue" />
                 </mesh>
             ))}
         </>
