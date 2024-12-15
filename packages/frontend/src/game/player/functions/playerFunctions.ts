@@ -1,6 +1,7 @@
 import type { Camera, Vector3 } from "three";
 import type { Capsule } from "three/examples/jsm/math/Capsule.js";
 import type { Octree } from "three/examples/jsm/Addons.js";
+import type { PlayerState } from "@fps/lib";
 
 const GRAVITY = 50;
 
@@ -21,14 +22,16 @@ export function getSideVector(camera: Camera, playerDirection: Vector3) {
 
 export function playerCollisions(capsule: Capsule, octree: Octree, playerVelocity: Vector3) {
     const result = octree.capsuleIntersect(capsule);
-    if (result.normal == null) {
-        return false;
-    }
+    if (result.normal == null) return false;
+
     const playerOnFloor = result.normal.y > 0;
+
     if (!playerOnFloor) {
         playerVelocity.addScaledVector(result.normal, -result.normal.dot(playerVelocity));
     }
+
     capsule.translate(result.normal.multiplyScalar(result.depth));
+
     return playerOnFloor;
 }
 
@@ -49,16 +52,27 @@ export function updatePlayer(
     capsule: Capsule,
     playerVelocity: Vector3,
     playerOnFloor: boolean,
+    playerStateRef: React.MutableRefObject<PlayerState>,
 ) {
     let damping = Math.exp(-4 * delta) - 1;
+
     if (!playerOnFloor) {
         playerVelocity.y -= GRAVITY * delta;
         damping *= 0.1; // small air resistance
     }
+
     playerVelocity.addScaledVector(playerVelocity, damping);
-    const deltaPosition = playerVelocity.clone().multiplyScalar(delta);
+
+    const deltaPosition = playerStateRef.current.position.set(
+        playerVelocity.x * delta,
+        playerVelocity.y * delta,
+        playerVelocity.z * delta,
+    );
+
     capsule.translate(deltaPosition);
     playerOnFloor = playerCollisions(capsule, octree, playerVelocity);
-    camera.position.copy(capsule.end);
+
+    camera.position.set(capsule.end.x, capsule.end.y, capsule.end.z);
+
     return playerOnFloor;
 }
