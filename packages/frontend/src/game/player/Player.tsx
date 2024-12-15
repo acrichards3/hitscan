@@ -25,7 +25,6 @@ export interface PlayerControls {
 
 interface PlayerProps {
     activeWeaponRef: React.MutableRefObject<WeaponStats>;
-    children?: React.ReactNode;
     octree: Octree;
     playerStateRef: React.MutableRefObject<PlayerState>;
 }
@@ -78,5 +77,5 @@ export const Player: React.FC<PlayerProps> = (props) => {
         });
     });
 
-    return props.children;
+    return null;
 };
