@@ -21,10 +21,11 @@ interface UseControlsProps {
 
 export const useControls = (props: UseControlsProps) => {
     // Crouch and prone state
+    const crouchStartTime = React.useRef(0);
+    const currentHeight = React.useRef(1);
+    const timeSpentCrouching = React.useRef(0);
     const wasCrouchPressed = React.useRef(false);
-    const crouchHoldStart = React.useRef<number | null>(null);
-    const currentHeight = React.useRef(1.0);
-    const proneAttempted = React.useRef(false);
+    const lockCrouch = React.useRef(false);
 
     // Jump state
     const wasJumpPressed = React.useRef(false);
@@ -42,11 +43,12 @@ export const useControls = (props: UseControlsProps) => {
         crouchAndProne({
             capsule: props.capsule,
             clock,
-            crouchHoldStart,
+            crouchStartTime,
             currentHeight,
             gamepad,
+            lockCrouch,
             playerStateRef: props.playerStateRef,
-            proneAttempted,
+            timeSpentCrouching,
             wasCrouchPressed,
         });
 
