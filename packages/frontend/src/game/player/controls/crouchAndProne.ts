@@ -82,6 +82,12 @@ export const crouchAndProne = (props: UseCrouchProneProps) => {
         playerState.isProne = false;
     }
 
+    // If player starts sprinting, stand up from any crouch or prone state
+    if (props.playerStateRef.current.isSprinting) {
+        playerState.isCrouching = false;
+        playerState.isProne = false;
+    }
+
     // ! - * HEIGHT CALCULATIONS *
 
     // Determine target height based on crouch/prone state
