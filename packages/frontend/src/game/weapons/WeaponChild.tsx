@@ -36,17 +36,17 @@ export const WeaponChild: React.FC<WeaponChildProps> = (props) => {
     });
 
     // TODO: Fix this trash
-    const { playShootSound } = useWeaponSounds({
-        audioContext: audioContextRef.current,
-        playerStateRef: props.playerStateRef,
-        shootBufferUrl: props.shootBufferUrl,
-        stats: props.stats,
-    });
+    // const { playShootSound } = useWeaponSounds({
+    //     audioContext: audioContextRef.current,
+    //     playerStateRef: props.playerStateRef,
+    //     shootBufferUrl: props.shootBufferUrl,
+    //     stats: props.stats,
+    // });
 
-    useFrame(() => {
-        if (audioContextRef.current.state === "suspended") void audioContextRef.current.resume(); // User has to interact with the page to enable audio
-        playShootSound();
-    });
+    // useFrame(() => {
+    //     if (audioContextRef.current.state === "suspended") void audioContextRef.current.resume(); // User has to interact with the page to enable audio
+    //     playShootSound();
+    // });
 
     return (
         <group dispose={null} ref={group}>
