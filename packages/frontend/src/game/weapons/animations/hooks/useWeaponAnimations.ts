@@ -22,6 +22,9 @@ interface WeaponAnimationProps {
 }
 
 export const useWeaponAnimations = (props: WeaponAnimationProps) => {
+    const crouchOffset = { x: -0.03, y: -0.01 } as const;
+    const currentOffset = React.useRef({ x: props.idleOffset.x, y: props.idleOffset.y });
+
     useFrame(({ camera, clock }) => {
         if (!props.group.current) return;
 
@@ -43,9 +46,12 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
         if (gamepad == null) {
             idle({
                 clock,
+                crouchOffset,
+                currentOffset: currentOffset.current,
                 group: props.group.current,
                 idleOffset: props.idleOffset,
                 idleRotation: props.idleRotation,
+                playerState: playerRef,
             });
             return;
         }
@@ -81,6 +87,7 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
                 cameraQuaternion,
                 clock,
                 group: props.group.current,
+                playerIsCrouching: playerRef.isCrouching,
                 playerIsWalking,
                 swayOffset,
                 walkingSpeed,
@@ -98,12 +105,19 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
             return;
         }
 
+        if (playerRef.isProne) {
+            // Do something here
+        }
+
         if (playerIsWalking) {
             walk({
                 clock,
+                crouchOffset,
+                currentOffset: currentOffset.current,
                 group: props.group.current,
                 idleOffset: props.idleOffset,
                 idleRotation: props.idleRotation,
+                playerState: playerRef,
                 walkingSpeed,
             });
             return;
@@ -112,9 +126,12 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
         // Default to idle animation if no other input
         idle({
             clock,
+            crouchOffset,
+            currentOffset: currentOffset.current,
             group: props.group.current,
             idleOffset: props.idleOffset,
             idleRotation: props.idleRotation,
+            playerState: playerRef,
         });
     });
 };
