@@ -27,7 +27,7 @@ export const ads = (props: ApplyADSProps) => {
     props.group.translateZ(props.adsOffset.z);
 
     // If the player is walking while aiming, apply a sway effect
-    if (props.playerIsWalking) {
+    if (props.playerIsWalking && props.walkingSpeed > 0) {
         const adsWalkingAmplitude = 0.003; // Adjust the amplitude to control sway intensity
         const { x, y } = walkCoordinates({
             amplitude: adsWalkingAmplitude,
