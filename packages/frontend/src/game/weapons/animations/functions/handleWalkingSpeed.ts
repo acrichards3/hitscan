@@ -19,5 +19,8 @@ export const handleWalkingSpeed = (playerRef: PlayerState, leftX: number, leftY:
     // Cut movement speed in half when aiming
     if (playerRef.isAiming) walkingSpeed /= 2;
 
+    // Stop player from moving if they ADS while prone
+    if (playerRef.isProne && playerRef.isAiming) walkingSpeed = 0;
+
     return walkingSpeed;
 };

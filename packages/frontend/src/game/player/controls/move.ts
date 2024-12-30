@@ -21,6 +21,7 @@ export const move = (props: UseMoveProps) => {
         // TODO: Better deadzone handling
         Math.abs(angle) < 0.1 ? 0 : angle,
     );
+
     if (leftX == null || leftY == null || rightX == null || rightY == null) {
         return;
     }
@@ -55,6 +56,9 @@ export const move = (props: UseMoveProps) => {
 
     // Cut movement speed into a quarter when prone (this stacks with crouching)
     if (playerRef.isProne) moveSpeedDelta /= 4;
+
+    // Prevent player from moving if they ADS while prone
+    if (playerRef.isProne && playerRef.isAiming) moveSpeedDelta = 0;
 
     props.playerVelocity.add(
         getSideVector(props.camera, props.playerDirection).multiplyScalar(moveSpeedDelta * leftX),

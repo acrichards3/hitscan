@@ -1,5 +1,6 @@
 import React from "react";
 import { ads } from "../ads";
+import { crawl } from "../crawl";
 import { idle } from "../idle";
 import { handleWalkingSpeed } from "../functions/handleWalkingSpeed";
 import { sprint } from "../sprint";
@@ -106,7 +107,13 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
         }
 
         if (playerRef.isProne) {
-            // Do something here
+            crawl({
+                clock,
+                group: props.group.current,
+                idleOffset: props.idleOffset,
+                idleRotation: props.idleRotation,
+                walkingSpeed,
+            });
         }
 
         if (playerIsWalking) {
