@@ -1,28 +1,66 @@
+import { MathUtils } from "three";
+import type { PlayerState } from "@fps/lib";
 import type { Group, Vector3, Clock } from "three";
 
 interface ApplyWalk {
     clock: Clock;
+    crouchOffset: { x: number; y: number };
+    currentOffset: { x: number; y: number };
     group: Group;
     idleOffset: Vector3;
     idleRotation: Vector3;
+    playerState: PlayerState;
     walkingSpeed: number;
 }
 
 /**
  * Applies the walking animation
- * @param props - The group, idle offset, idle rotation, and walking speed to apply to the weapon
+ * @param props - The crouch offset, group, idle offset, idle rotation, player state, and walking speed to apply to the weapon
  */
 export const walk = (props: ApplyWalk) => {
-    const { clock, group, idleOffset, idleRotation, walkingSpeed } = props;
     const walkingAmplitude = 0.01;
 
-    group.rotateX(idleRotation.x);
-    group.rotateY(idleRotation.y);
-    group.rotateZ(idleRotation.z);
-    group.translateX(idleOffset.x + walkCoordinates(walkingAmplitude, clock, walkingSpeed).x);
-    group.translateY(idleOffset.y + walkCoordinates(walkingAmplitude, clock, walkingSpeed).y);
-    group.translateZ(idleOffset.z);
+    const [targetOffsetX, targetOffsetY] = [
+        props.playerState.isCrouching ? props.crouchOffset.x : 0,
+        props.playerState.isCrouching ? props.crouchOffset.y : 0,
+    ];
+
+    // Smoothly transition between the current and target offsets
+    props.currentOffset.x = MathUtils.lerp(props.currentOffset.x, targetOffsetX, 0.1);
+    props.currentOffset.y = MathUtils.lerp(props.currentOffset.y, targetOffsetY, 0.1);
+
+    props.group.rotateX(props.idleRotation.x);
+    props.group.rotateY(props.idleRotation.y);
+    props.group.rotateZ(props.idleRotation.z);
+    props.group.translateX(
+        props.currentOffset.x +
+            props.idleOffset.x +
+            walkCoordinates({
+                amplitude: walkingAmplitude,
+                clock: props.clock,
+                isCrouching: props.playerState.isCrouching,
+                walkingSpeed: props.walkingSpeed,
+            }).x,
+    );
+    props.group.translateY(
+        props.currentOffset.y +
+            props.idleOffset.y +
+            walkCoordinates({
+                amplitude: walkingAmplitude,
+                clock: props.clock,
+                isCrouching: props.playerState.isCrouching,
+                walkingSpeed: props.walkingSpeed,
+            }).y,
+    );
+    props.group.translateZ(props.idleOffset.z);
 };
+
+interface WalkCoordinatesProps {
+    amplitude: number;
+    clock: Clock;
+    isCrouching: boolean;
+    walkingSpeed: number;
+}
 
 /**
  * Generates a movement pattern for the walking animation
@@ -32,7 +70,9 @@ export const walkCoordinates = (() => {
     let currentFrequency = 0;
     let phase = 0;
 
-    return (amplitude: number, clock: Clock, walkingSpeed: number): { x: number; y: number } => {
+    return (props: WalkCoordinatesProps): { x: number; y: number } => {
+        const { amplitude, clock, isCrouching, walkingSpeed } = props;
+
         const minFrequency = 3; // min animation speed
         const maxFrequency = 7.2; // max animation speed
 
@@ -51,9 +91,11 @@ export const walkCoordinates = (() => {
 
         // Horizontal movement with an increased amplitude and an additional sinusoidal component for slight left-right motion
         const x = amplitude * Math.sin(phase) + amplitude * 0.5 * Math.sin(phase / 2);
+
         // Vertical movement (quadratic)
         const y = amplitude * Math.sin(phase) ** 2;
 
-        return { x, y };
+        // Reduce movement amplitude when crouching
+        return { x: isCrouching ? x * 0.65 : x, y: isCrouching ? y * 0.65 : y };
     };
 })();

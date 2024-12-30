@@ -33,7 +33,6 @@ export const crouchAndProne = (props: UseCrouchProneProps) => {
 
     // * - Player is currently standing
     if (!playerState.isProne && !playerState.isCrouching && isCrouchPressed) {
-        console.log("stand block ran");
         playerState.isCrouching = true;
         lockCrouch.current = true;
     }

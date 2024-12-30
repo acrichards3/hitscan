@@ -8,6 +8,7 @@ interface ApplyADSProps {
     cameraQuaternion: Quaternion;
     clock: Clock;
     group: Group;
+    playerIsCrouching: boolean;
     playerIsWalking: boolean;
     swayOffset: Vector3;
     walkingSpeed: number;
@@ -28,7 +29,12 @@ export const ads = (props: ApplyADSProps) => {
     // If the player is walking while aiming, apply a sway effect
     if (props.playerIsWalking) {
         const adsWalkingAmplitude = 0.003; // Adjust the amplitude to control sway intensity
-        const { x, y } = walkCoordinates(adsWalkingAmplitude, props.clock, props.walkingSpeed); // Get sway offset based on walking speed
+        const { x, y } = walkCoordinates({
+            amplitude: adsWalkingAmplitude,
+            clock: props.clock,
+            isCrouching: props.playerIsCrouching,
+            walkingSpeed: props.walkingSpeed,
+        }); // Get sway offset based on walking speed
 
         props.swayOffset.set(x, y, 0); // Set sway offset
         props.camera.getWorldQuaternion(props.cameraQuaternion); // Get camera's world quaternion
