@@ -11,6 +11,7 @@ interface ARProps {
 }
 
 export const AK47: React.FC<ARProps> = ({ playerStateRef }) => {
+    console.log("test");
     return (
         <WeaponChild
             adsOffset={new Vector3(0, -0.14, -0.1)}
