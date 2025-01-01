@@ -8,6 +8,8 @@ interface ApplySprint {
     idleRotation: Vector3;
 }
 
+type Coordinate = { x: number; y: number; z: number };
+
 export const sprint = (props: ApplySprint) => {
     const { group, idleOffset, idleRotation } = props;
 
@@ -19,29 +21,28 @@ export const sprint = (props: ApplySprint) => {
     group.translateZ(idleOffset.z + sprintCoordinates(props.clock).translate.z);
 };
 
-// TODO: Define Vector3's outside of useFrame loop for better performance
-const sprintCoordinates = (clock: Clock): { rotate: Vector3; translate: Vector3 } => {
+const sprintCoordinates = (clock: Clock): { rotate: Coordinate; translate: Coordinate } => {
     const amplitude = 0.01; // Base amplitude for subtle movements
     const frequency = 4.4; // Frequency adjusted for realistic bobs and strides
     const time = clock.getElapsedTime();
 
     // Rotation simulates looking direction or head bob slightly
-    const rotate = new Vector3(
-        -0.55 + amplitude * 1.5 * Math.sin(frequency * time), // X: Slight forward tilt
-        0.9 + amplitude * 0.5 * Math.cos(frequency * time), // Y: Slight rotation, maybe due to strafing
-        0.5 + amplitude * 1.5 * Math.sin(frequency * time), // Z: Slight tilt from side to side
-    );
+    const rotate = {
+        x: -0.55 + amplitude * 1.5 * Math.sin(frequency * time), // X: Slight forward tilt
+        y: 0.9 + amplitude * 0.5 * Math.cos(frequency * time), // Y: Slight rotation, maybe due to strafing
+        z: 0.5 + amplitude * 1.5 * Math.sin(frequency * time), // Z: Slight tilt from side to side
+    };
 
     const initialX = 0.1;
     const initialY = -0.05;
     const initialZ = 0.1;
     const ZFrequency = 8.8; // Frequency adjusted for realistic bobs and strides
     // Translate mimics actual movement, with pronounced vertical bobbing and in-and-out motion
-    const translate = new Vector3(
-        initialX + amplitude * 0.05 * Math.sin(frequency * time), // X: Slight side-to-side motion
-        initialY + 0.04 * Math.abs(Math.sin(frequency * time * 2)), // Y: Vertical bobbing, doubled frequency for footfalls
-        initialZ + (-0.033 * Math.cos(ZFrequency * time) + 0.01 * Math.sin(frequency * time)), // Z: Enhanced forward movement with in-and-out variation
-    );
+    const translate = {
+        x: initialX + amplitude * 0.05 * Math.sin(frequency * time), // X: Slight side-to-side motion
+        y: initialY + 0.04 * Math.abs(Math.sin(frequency * time * 2)), // Y: Vertical bobbing, doubled frequency for footfalls
+        z: initialZ + (-0.033 * Math.cos(ZFrequency * time) + 0.01 * Math.sin(frequency * time)), // Z: Enhanced forward movement with in-and-out variation
+    };
 
     return { rotate, translate };
 };

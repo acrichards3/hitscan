@@ -106,7 +106,7 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
             return;
         }
 
-        if (playerRef.isProne) {
+        if (playerRef.isProne && playerIsWalking) {
             crawl({
                 clock,
                 group: props.group.current,
@@ -114,6 +114,7 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
                 idleRotation: props.idleRotation,
                 walkingSpeed,
             });
+            return;
         }
 
         if (playerIsWalking) {
