@@ -1,9 +1,12 @@
 import { walkCoordinates } from "./walk";
+import { lerpAnimation } from "./lerpAnimation";
+import type { AnimationPosition } from "./hooks/useWeaponAnimations";
 import type { Group, Vector3, Clock, Camera, Quaternion } from "three";
 
 interface ApplyADSProps {
     adsOffset: Vector3;
     adsRotation: Vector3;
+    animationTransition: AnimationPosition;
     camera: Camera;
     cameraQuaternion: Quaternion;
     clock: Clock;
@@ -19,12 +22,27 @@ interface ApplyADSProps {
  * @param props - The group, idle offset, idle rotation, and walking speed to apply to the weapon
  */
 export const ads = (props: ApplyADSProps) => {
-    props.group.rotateX(props.adsRotation.x);
-    props.group.rotateY(props.adsRotation.y);
-    props.group.rotateZ(props.adsRotation.z);
-    props.group.translateX(props.adsOffset.x);
-    props.group.translateY(props.adsOffset.y);
-    props.group.translateZ(props.adsOffset.z);
+    const targetPosition = {
+        rotateX: props.adsRotation.x,
+        rotateY: props.adsRotation.y,
+        rotateZ: props.adsRotation.z,
+        translateX: props.adsOffset.x,
+        translateY: props.adsOffset.y,
+        translateZ: props.adsOffset.z,
+    };
+
+    const lerp = lerpAnimation({
+        animationTransition: props.animationTransition,
+        speed: 0.3,
+        target: targetPosition,
+    });
+
+    props.group.rotateX(lerp.rotateX);
+    props.group.rotateY(lerp.rotateY);
+    props.group.rotateZ(lerp.rotateZ);
+    props.group.translateX(lerp.translateX);
+    props.group.translateY(lerp.translateY);
+    props.group.translateZ(lerp.translateZ);
 
     // If the player is walking while aiming, apply a sway effect
     if (props.playerIsWalking && props.walkingSpeed > 0) {

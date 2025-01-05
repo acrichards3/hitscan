@@ -1,7 +1,10 @@
 import { Vector3 } from "three";
+import { lerpAnimation } from "./lerpAnimation";
+import type { AnimationPosition } from "./hooks/useWeaponAnimations";
 import type { Clock, Group } from "three";
 
 interface CrawlProps {
+    animationTransition: AnimationPosition;
     clock: Clock;
     group: Group;
     idleOffset: Vector3;
@@ -13,14 +16,25 @@ type Coordinate = { x: number; y: number; z: number };
 type CrawlCoordinates = { rotate: Coordinate; translate: Coordinate };
 
 export const crawl = (props: CrawlProps) => {
-    const { clock, group, idleOffset, idleRotation, walkingSpeed } = props;
+    const { animationTransition, clock, group, idleOffset, idleRotation, walkingSpeed } = props;
 
-    group.rotateX(idleRotation.x + crawlCoordinates(clock, walkingSpeed).rotate.x);
-    group.rotateY(idleRotation.y + crawlCoordinates(clock, walkingSpeed).rotate.y);
-    group.rotateZ(idleRotation.z + crawlCoordinates(clock, walkingSpeed).rotate.z);
-    group.translateX(idleOffset.x + crawlCoordinates(clock, walkingSpeed).translate.x);
-    group.translateY(idleOffset.y + crawlCoordinates(clock, walkingSpeed).translate.y);
-    group.translateZ(idleOffset.z + crawlCoordinates(clock, walkingSpeed).translate.z);
+    const targetPosition = {
+        rotateX: idleRotation.x + crawlCoordinates(clock, walkingSpeed).rotate.x,
+        rotateY: idleRotation.y + crawlCoordinates(clock, walkingSpeed).rotate.y,
+        rotateZ: idleRotation.z + crawlCoordinates(clock, walkingSpeed).rotate.z,
+        translateX: idleOffset.x + crawlCoordinates(clock, walkingSpeed).translate.x,
+        translateY: idleOffset.y + crawlCoordinates(clock, walkingSpeed).translate.y,
+        translateZ: idleOffset.z + crawlCoordinates(clock, walkingSpeed).translate.z,
+    };
+
+    const lerp = lerpAnimation({ animationTransition, target: targetPosition });
+
+    group.rotateX(lerp.rotateX);
+    group.rotateY(lerp.rotateY);
+    group.rotateZ(lerp.rotateZ);
+    group.translateX(lerp.translateX);
+    group.translateY(lerp.translateY);
+    group.translateZ(lerp.translateZ);
 };
 
 const crawlCoordinates = (() => {

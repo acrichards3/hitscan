@@ -22,12 +22,39 @@ interface WeaponAnimationProps {
     swayOffestRef: React.MutableRefObject<Vector3>;
 }
 
+export interface AnimationPosition {
+    rotateX: number;
+    rotateY: number;
+    rotateZ: number;
+    translateX: number;
+    translateY: number;
+    translateZ: number;
+}
+
+type Animation = "idle" | "walk" | "sprint" | "crawl" | "ads";
+
 export const useWeaponAnimations = (props: WeaponAnimationProps) => {
     const crouchOffset = { x: -0.03, y: -0.01 } as const;
     const currentOffset = React.useRef({ x: props.idleOffset.x, y: props.idleOffset.y });
 
+    const animationTransition = React.useRef<AnimationPosition>({
+        rotateX: props.idleRotation.x,
+        rotateY: props.idleRotation.y,
+        rotateZ: props.idleRotation.z,
+        translateX: props.idleOffset.x,
+        translateY: props.idleOffset.y,
+        translateZ: props.idleOffset.z,
+    });
+
+    const previousAnimation = React.useRef<Animation>("idle");
+    const currentAnimation = React.useRef<Animation>("idle");
+
     useFrame(({ camera, clock }) => {
         if (!props.group.current) return;
+
+        if (currentAnimation !== previousAnimation) {
+            previousAnimation.current = currentAnimation.current;
+        }
 
         const [gamepad] = navigator.getGamepads();
         const playerRef = props.playerStateRef.current;
@@ -46,6 +73,7 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
         // Default to idle if no gamepad is connected
         if (gamepad == null) {
             idle({
+                animationTransition: animationTransition.current,
                 clock,
                 crouchOffset,
                 currentOffset: currentOffset.current,
@@ -84,6 +112,7 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
             ads({
                 adsOffset: props.adsOffset,
                 adsRotation: props.adsRotation,
+                animationTransition: animationTransition.current,
                 camera,
                 cameraQuaternion,
                 clock,
@@ -98,6 +127,7 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
 
         if (playerRef.isSprinting) {
             sprint({
+                animationTransition: animationTransition.current,
                 clock,
                 group: props.group.current,
                 idleOffset: props.idleOffset,
@@ -108,6 +138,7 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
 
         if (playerRef.isProne && playerIsWalking) {
             crawl({
+                animationTransition: animationTransition.current,
                 clock,
                 group: props.group.current,
                 idleOffset: props.idleOffset,
@@ -119,6 +150,7 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
 
         if (playerIsWalking) {
             walk({
+                animationTransition: animationTransition.current,
                 clock,
                 crouchOffset,
                 currentOffset: currentOffset.current,
@@ -133,6 +165,7 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
 
         // Default to idle animation if no other input
         idle({
+            animationTransition: animationTransition.current,
             clock,
             crouchOffset,
             currentOffset: currentOffset.current,

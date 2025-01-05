@@ -22,7 +22,6 @@ module.exports = {
     rules: {
         "no-unused-vars": "warn",
         "@typescript-eslint/no-unused-vars": ["warn"],
-        "react/jsx-boolean-value": [2, "always"],
         "react/jsx-sort-props": [
             1,
             {

@@ -1,7 +1,10 @@
-import { Vector3 } from "three";
-import type { Clock, Group } from "three";
+import { Clock, Group } from "three";
+import { lerpAnimation } from "./lerpAnimation";
+import type { Vector3 } from "three";
+import type { AnimationPosition } from "./hooks/useWeaponAnimations";
 
 interface ApplySprint {
+    animationTransition: AnimationPosition;
     clock: Clock;
     group: Group;
     idleOffset: Vector3;
@@ -11,14 +14,32 @@ interface ApplySprint {
 type Coordinate = { x: number; y: number; z: number };
 
 export const sprint = (props: ApplySprint) => {
-    const { group, idleOffset, idleRotation } = props;
+    const { animationTransition, clock, group, idleOffset, idleRotation } = props;
 
-    group.rotateX(idleRotation.x + sprintCoordinates(props.clock).rotate.x);
-    group.rotateY(idleRotation.y + sprintCoordinates(props.clock).rotate.y);
-    group.rotateZ(idleRotation.z + sprintCoordinates(props.clock).rotate.z);
-    group.translateX(idleOffset.x + sprintCoordinates(props.clock).translate.x);
-    group.translateY(idleOffset.y + sprintCoordinates(props.clock).translate.y);
-    group.translateZ(idleOffset.z + sprintCoordinates(props.clock).translate.z);
+    const target = {
+        rotateX: idleRotation.x + sprintCoordinates(clock).rotate.x,
+        rotateY: idleRotation.y + sprintCoordinates(clock).rotate.y,
+        rotateZ: idleRotation.z + sprintCoordinates(clock).rotate.z,
+        translateX: idleOffset.x + sprintCoordinates(clock).translate.x,
+        translateY: idleOffset.y + sprintCoordinates(clock).translate.y,
+        translateZ: idleOffset.z + sprintCoordinates(clock).translate.z,
+    };
+
+    const lerp = lerpAnimation({ animationTransition, speed: 0.12, target });
+
+    group.rotateX(lerp.rotateX);
+    group.rotateY(lerp.rotateY);
+    group.rotateZ(lerp.rotateZ);
+    group.translateX(lerp.translateX);
+    group.translateY(lerp.translateY);
+    group.translateZ(lerp.translateZ);
+
+    // group.rotateX(idleRotation.x + sprintCoordinates(clock).rotate.x);
+    // group.rotateY(idleRotation.y + sprintCoordinates(clock).rotate.y);
+    // group.rotateZ(idleRotation.z + sprintCoordinates(clock).rotate.z);
+    // group.translateX(idleOffset.x + sprintCoordinates(clock).translate.x);
+    // group.translateY(idleOffset.y + sprintCoordinates(clock).translate.y);
+    // group.translateZ(idleOffset.z + sprintCoordinates(clock).translate.z);
 };
 
 const sprintCoordinates = (clock: Clock): { rotate: Coordinate; translate: Coordinate } => {

@@ -1,8 +1,11 @@
 import { MathUtils } from "three";
+import { lerpAnimation } from "./lerpAnimation";
+import type { AnimationPosition } from "./hooks/useWeaponAnimations";
 import type { PlayerState } from "@fps/lib";
 import type { Group, Vector3, Clock } from "three";
 
 interface ApplyWalk {
+    animationTransition: AnimationPosition;
     clock: Clock;
     crouchOffset: { x: number; y: number };
     currentOffset: { x: number; y: number };
@@ -29,11 +32,12 @@ export const walk = (props: ApplyWalk) => {
     props.currentOffset.x = MathUtils.lerp(props.currentOffset.x, targetOffsetX, 0.1);
     props.currentOffset.y = MathUtils.lerp(props.currentOffset.y, targetOffsetY, 0.1);
 
-    props.group.rotateX(props.idleRotation.x);
-    props.group.rotateY(props.idleRotation.y);
-    props.group.rotateZ(props.idleRotation.z);
-    props.group.translateX(
-        props.currentOffset.x +
+    const targetPosition = {
+        rotateX: props.idleRotation.x,
+        rotateY: props.idleRotation.y,
+        rotateZ: props.idleRotation.z,
+        translateX:
+            props.currentOffset.x +
             props.idleOffset.x +
             walkCoordinates({
                 amplitude: walkingAmplitude,
@@ -41,9 +45,8 @@ export const walk = (props: ApplyWalk) => {
                 isCrouching: props.playerState.isCrouching,
                 walkingSpeed: props.walkingSpeed,
             }).x,
-    );
-    props.group.translateY(
-        props.currentOffset.y +
+        translateY:
+            props.currentOffset.y +
             props.idleOffset.y +
             walkCoordinates({
                 amplitude: walkingAmplitude,
@@ -51,8 +54,20 @@ export const walk = (props: ApplyWalk) => {
                 isCrouching: props.playerState.isCrouching,
                 walkingSpeed: props.walkingSpeed,
             }).y,
-    );
-    props.group.translateZ(props.idleOffset.z);
+        translateZ: props.idleOffset.z,
+    };
+
+    const lerp = lerpAnimation({
+        animationTransition: props.animationTransition,
+        target: targetPosition,
+    });
+
+    props.group.rotateX(lerp.rotateX);
+    props.group.rotateY(lerp.rotateY);
+    props.group.rotateZ(lerp.rotateZ);
+    props.group.translateX(lerp.translateX);
+    props.group.translateY(lerp.translateY);
+    props.group.translateZ(lerp.translateZ);
 };
 
 interface WalkCoordinatesProps {
