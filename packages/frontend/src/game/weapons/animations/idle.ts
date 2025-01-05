@@ -1,9 +1,12 @@
 import { MathUtils } from "three";
+import { lerpAnimation } from "./lerpAnimation";
+import type { AnimationPosition } from "./hooks/useWeaponAnimations";
 import type { Clock } from "three";
 import type { Group, Vector3 } from "three";
 import type { PlayerState } from "@fps/lib";
 
 interface ApplyIdle {
+    animationTransition: AnimationPosition;
     clock: Clock;
     crouchOffset: { x: number; y: number };
     currentOffset: { x: number; y: number };
@@ -29,12 +32,27 @@ export const idle = (props: ApplyIdle) => {
     currentOffset.x = MathUtils.lerp(currentOffset.x, targetOffsetX, 0.1);
     currentOffset.y = MathUtils.lerp(currentOffset.y, targetOffsetY, 0.1);
 
-    group.rotateX(idleRotation.x);
-    group.rotateY(idleRotation.y);
-    group.rotateZ(idleRotation.z);
-    group.translateX(currentOffset.x + idleOffset.x + idleCoordinates(props.clock).x);
-    group.translateY(currentOffset.y + idleOffset.y + idleCoordinates(props.clock).y);
-    group.translateZ(idleOffset.z);
+    const target = {
+        rotateX: idleRotation.x,
+        rotateY: idleRotation.y,
+        rotateZ: idleRotation.z,
+        translateX: currentOffset.x + idleOffset.x + idleCoordinates(props.clock).x,
+        translateY: currentOffset.y + idleOffset.y + idleCoordinates(props.clock).y,
+        translateZ: idleOffset.z,
+    };
+
+    const lerp = lerpAnimation({
+        animationTransition: props.animationTransition,
+        speed: 0.2,
+        target,
+    });
+
+    group.rotateX(lerp.rotateX);
+    group.rotateY(lerp.rotateY);
+    group.rotateZ(lerp.rotateZ);
+    group.translateX(lerp.translateX);
+    group.translateY(lerp.translateY);
+    group.translateZ(lerp.translateZ);
 };
 
 /**
