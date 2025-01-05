@@ -31,8 +31,6 @@ export interface AnimationPosition {
     translateZ: number;
 }
 
-type Animation = "idle" | "walk" | "sprint" | "crawl" | "ads";
-
 export const useWeaponAnimations = (props: WeaponAnimationProps) => {
     const crouchOffset = { x: -0.03, y: -0.01 } as const;
     const currentOffset = React.useRef({ x: props.idleOffset.x, y: props.idleOffset.y });
@@ -46,15 +44,8 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
         translateZ: props.idleOffset.z,
     });
 
-    const previousAnimation = React.useRef<Animation>("idle");
-    const currentAnimation = React.useRef<Animation>("idle");
-
     useFrame(({ camera, clock }) => {
         if (!props.group.current) return;
-
-        if (currentAnimation !== previousAnimation) {
-            previousAnimation.current = currentAnimation.current;
-        }
 
         const [gamepad] = navigator.getGamepads();
         const playerRef = props.playerStateRef.current;

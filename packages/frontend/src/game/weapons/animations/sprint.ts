@@ -33,13 +33,6 @@ export const sprint = (props: ApplySprint) => {
     group.translateX(lerp.translateX);
     group.translateY(lerp.translateY);
     group.translateZ(lerp.translateZ);
-
-    // group.rotateX(idleRotation.x + sprintCoordinates(clock).rotate.x);
-    // group.rotateY(idleRotation.y + sprintCoordinates(clock).rotate.y);
-    // group.rotateZ(idleRotation.z + sprintCoordinates(clock).rotate.z);
-    // group.translateX(idleOffset.x + sprintCoordinates(clock).translate.x);
-    // group.translateY(idleOffset.y + sprintCoordinates(clock).translate.y);
-    // group.translateZ(idleOffset.z + sprintCoordinates(clock).translate.z);
 };
 
 const sprintCoordinates = (clock: Clock): { rotate: Coordinate; translate: Coordinate } => {

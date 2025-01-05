@@ -53,13 +53,6 @@ export const idle = (props: ApplyIdle) => {
     group.translateX(lerp.translateX);
     group.translateY(lerp.translateY);
     group.translateZ(lerp.translateZ);
-
-    // group.rotateX(idleRotation.x);
-    // group.rotateY(idleRotation.y);
-    // group.rotateZ(idleRotation.z);
-    // group.translateX(currentOffset.x + idleOffset.x + idleCoordinates(props.clock).x);
-    // group.translateY(currentOffset.y + idleOffset.y + idleCoordinates(props.clock).y);
-    // group.translateZ(idleOffset.z);
 };
 
 /**
