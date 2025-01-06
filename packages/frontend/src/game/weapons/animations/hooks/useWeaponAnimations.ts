@@ -83,6 +83,7 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
         const playerIsWalking = Math.abs(leftX) > 0.1 || Math.abs(leftY) > 0.1;
         const isJumpButtonPressed = gamepad.buttons[0]?.pressed;
         const isCrouchButtonPressed = gamepad.buttons[1]?.pressed;
+        const isSprintButtonPressed = gamepad.buttons[10]?.pressed;
 
         playerRef.isAiming = !!gamepad.buttons[6]?.pressed;
 
@@ -91,9 +92,14 @@ export const useWeaponAnimations = (props: WeaponAnimationProps) => {
         if (gamepad.buttons[7]?.pressed && playerRef.isSprinting) playerRef.isSprinting = false;
         if (isJumpButtonPressed && playerRef.isCrouching) playerRef.isCrouching = false;
 
-        if (leftY < -0.9 && gamepad.buttons[10]?.pressed && !playerRef.isSprinting) {
-            playerRef.isSprinting = true;
-            playerRef.isCrouching = false;
+        // Set sprinting state
+        if (leftY < -0.9 && isSprintButtonPressed && !playerRef.isSprinting) {
+            if (gamepad.buttons[7]?.pressed) {
+                playerRef.isSprinting = false;
+            } else {
+                playerRef.isSprinting = true;
+                playerRef.isCrouching = false;
+            }
         }
 
         if (leftY > -0.9 && playerRef.isSprinting) playerRef.isSprinting = false;
